@@ -23,8 +23,6 @@ periods = sorted({p for p, _, _ in valid_combinations})
 composers = sorted({c for _, c, _ in valid_combinations})
 instruments = sorted({i for _, _, i in valid_combinations})
 
-# Shared flag to stop the generation process
-stop_event = threading.Event()
 
 # Dynamic component updates
 def update_components(period, composer):
@@ -109,12 +107,6 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     process_output = ""
     while thread.is_alive():
-        if stop_event.is_set():  # Check if the stop event is set
-            thread.join()  # Wait for the thread to finish
-            stop_event.clear()  # Reset the stop event
-            yield process_output, "Generation stopped by user."
-            return
-
         try:
             text = output_queue.get(timeout=0.1)
             process_output += text
@@ -129,10 +121,6 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     final_result = result_container[0] if result_container else ""
     yield process_output, final_result
-
-
-def stop_generation():
-    stop_event.set()  # Set the stop event to stop the generation
 
 
 with gr.Blocks() as demo:
@@ -174,13 +162,12 @@ with gr.Blocks() as demo:
                     label="Key Signature",
                     value=None,
                 )
-                metadata_M = gr.Textbox(  # todo better handling, check for validity / dropdown
+                metadata_M = gr.Textbox( # todo better handling, check for validity / dropdown
                     label="Time Signature",
                     value=None,
                 )
 
             generate_btn = gr.Button("Generate!", variant="primary")
-            stop_btn = gr.Button("Stop", variant="stop")  # Add a Stop button
 
             process_output = gr.Textbox(
                 label="Generation process",
@@ -226,12 +213,6 @@ with gr.Blocks() as demo:
         generate_music,
         inputs=[period_dd, composer_dd, instrument_dd, num_bars, metadata_K, metadata_M, top_k, top_p, temperature],
         outputs=[process_output, final_output]
-    )
-
-    stop_btn.click(
-        stop_generation,  # Call the stop_generation function when the Stop button is clicked
-        inputs=None,
-        outputs=None
     )
 
     save_btn.click(
