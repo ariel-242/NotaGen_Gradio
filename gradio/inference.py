@@ -41,6 +41,79 @@ model = model.to(device)
 model.eval()
 
 
+def add_cresc_dynamic_markers(abc_text):
+    # Regex pattern for finding the cresc annotation
+    cresc_pattern = r'(?i)("["_^<>@][^"]*cresc[^"]*")'
+
+    # Regex pattern for finding the next dynamic marking (!p!, !mp!, !mf!, etc.)
+    dynamic_pattern = r'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!)'
+
+    # Find all crescendo matches
+    cresc_matches = list(re.finditer(cresc_pattern, abc_text))
+
+    # If no crescendo found, return original text
+    if not cresc_matches:
+        return abc_text
+
+    modified_text = abc_text
+    offset = 0  # Track text changes to adjust indices
+
+    for match in cresc_matches:
+        cresc_end = match.end() + offset  # Adjust for previous insertions
+
+        # Add !<(! right after cresc
+        modified_text = modified_text[:cresc_end] + ' !<(!' + modified_text[cresc_end:]
+        offset += 4  # Adjust for the length of '!<(!'
+
+        # Search for the next dynamic marking after cresc
+        dynamic_match = re.search(dynamic_pattern, modified_text[cresc_end:])
+
+        if dynamic_match:
+            dyn_start = cresc_end + dynamic_match.start()
+
+            # Add !<)! right before the dynamic marking
+            modified_text = modified_text[:dyn_start] + '!<)! ' + modified_text[dyn_start:]
+            offset += 4  # Adjust for the length of '!<)!'
+
+    return modified_text
+
+
+def add_dim_dynamic_markers(abc_text):
+    # Regex pattern for finding the cresc annotation
+    cresc_pattern = r'(?i)("["_^<>@][^"]*dim.[^"]*")'  # todo maybe 'dim' and not 'dim.'
+
+    # Regex pattern for finding the next dynamic marking (!p!, !mp!, !mf!, etc.)
+    dynamic_pattern = r'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!)'
+
+    # Find all crescendo matches
+    cresc_matches = list(re.finditer(cresc_pattern, abc_text))
+
+    # If no crescendo found, return original text
+    if not cresc_matches:
+        return abc_text
+
+    modified_text = abc_text
+    offset = 0  # Track text changes to adjust indices
+
+    for match in cresc_matches:
+        cresc_end = match.end() + offset  # Adjust for previous insertions
+
+        # Add !>(! right after dim.
+        modified_text = modified_text[:cresc_end] + ' !>(!' + modified_text[cresc_end:]
+        offset += 4  # Adjust for the length of '!>(!'
+
+        # Search for the next dynamic marking after dim.
+        dynamic_match = re.search(dynamic_pattern, modified_text[cresc_end:])
+
+        if dynamic_match:
+            dyn_start = cresc_end + dynamic_match.start()
+
+            # Add !>)! right before the dynamic marking
+            modified_text = modified_text[:dyn_start] + '!>)! ' + modified_text[dyn_start:]
+            offset += 4  # Adjust for the length of '!>)!'
+
+    return modified_text
+
 def rest_unreduce(abc_lines):
 
     tunebody_index = None
@@ -262,7 +335,9 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 unreduced_abc_lines = [line for line in unreduced_abc_lines if not(line.startswith('%') and not line.startswith('%%'))]
                 unreduced_abc_lines = ['X:1\n'] + unreduced_abc_lines
                 unreduced_abc_text = ''.join(unreduced_abc_lines)
-                return unreduced_abc_text
+                fixed_cresc_abc_text = add_cresc_dynamic_markers(unreduced_abc_text)
+                fixed_dim_abc_text = add_dim_dynamic_markers(fixed_cresc_abc_text)
+                return fixed_dim_abc_text
 
         
 
