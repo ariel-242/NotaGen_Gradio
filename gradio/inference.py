@@ -1,5 +1,7 @@
 import os
 import time
+
+import numpy as np
 import torch
 from utils import *
 from config import *
@@ -53,14 +55,15 @@ def set_seed(seed):
     # Ensure the seed is an integer
     seed = int(seed)
 
-    # Set seeds for reproducibility
+    # Set seeds for all libraries
     random.seed(seed)  # Python's random module
-    torch.manual_seed(seed)  # PyTorch
-    if torch.cuda.is_available():  # CUDA (if using GPU)
+    np.random.seed(seed)  # NumPy
+    torch.manual_seed(seed)  # PyTorch CPU
+    if torch.cuda.is_available():  # PyTorch CUDA
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
-
-    print(f"Seed set to: {seed} (type: {type(seed)})")
+        # torch.backends.cudnn.deterministic = True  # Ensure deterministic CUDA operations
+        # torch.backends.cudnn.benchmark = False  # Disable benchmarking for reproducibility
 
 
 def get_previous_voice(text, index):
@@ -263,6 +266,8 @@ def rest_unreduce(abc_lines):
 
 def inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_path, seed, top_k, top_p,
                     temperature):
+    global model
+    global curr_model_path
     set_seed(seed)
     if model == None or model_path != curr_model_path:
         curr_model_path = model_path
