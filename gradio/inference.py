@@ -58,23 +58,23 @@ def set_seed(seed):
 
     print(f"Seed set to: {seed} (type: {type(seed)})")
 
+def get_previous_voice(text, index):
+    """
+    Finds the last [V:X] voice declaration before a given index in the text.
+
+    :param text: The ABC notation text.
+    :param index: The index position to check before.
+    :return: The last found voice declaration (e.g., "[V:1]") or None if not found.
+    """
+    voice_pattern = r"\[V:\d+\]"  # Pattern for voice declarations like [V:1], [V:2], etc.
+
+    # Search for all voice declarations before the given index
+    matches = list(re.finditer(voice_pattern, text[:index]))
+
+    # Return the last match if found
+    return matches[-1].group(0) if matches else None
 
 def add_cresc_dynamic_markers(abc_text):
-    def get_previous_voice(text, index):
-        """
-        Finds the last [V:X] voice declaration before a given index in the text.
-
-        :param text: The ABC notation text.
-        :param index: The index position to check before.
-        :return: The last found voice declaration (e.g., "[V:1]") or None if not found.
-        """
-        voice_pattern = r"\[V:\d+\]"  # Pattern for voice declarations like [V:1], [V:2], etc.
-
-        # Search for all voice declarations before the given index
-        matches = list(re.finditer(voice_pattern, text[:index]))
-
-        # Return the last match if found
-        return matches[-1].group(0) if matches else None
 
     # Regex pattern for finding the cresc annotation
     cresc_pattern = r'(?i)("["_^<>@][^"]*cresc[^"]*")'
@@ -107,7 +107,7 @@ def add_cresc_dynamic_markers(abc_text):
             for dynamic_match in dynamic_matchs:
                 dyn_start = cresc_end + dynamic_match.start()
                 # Add only if the previous voice is the same as before
-                if get_previous_voice(modified_text, dyn_start) != curr_voice:
+                if curr_voice != None and get_previous_voice(modified_text, dyn_start) != curr_voice:
                     continue
 
                 # Add !<)! right before the dynamic marking
@@ -121,37 +121,44 @@ def add_cresc_dynamic_markers(abc_text):
 
 def add_dim_dynamic_markers(abc_text):
     # Regex pattern for finding the cresc annotation
-    cresc_pattern = r'(?i)("["_^<>@][^"]*dim.[^"]*")'  # todo maybe 'dim' and not 'dim.'
+    dim_pattern = r'(?i)("["_^<>@][^"]*dim.[^"]*")'  # todo maybe 'dim' and not 'dim.'
 
     # Regex pattern for finding the next dynamic marking (!p!, !mp!, !mf!, etc.)
     dynamic_pattern = r'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!)'
 
     # Find all crescendo matches
-    cresc_matches = list(re.finditer(cresc_pattern, abc_text))
+    dim_matches = list(re.finditer(dim_pattern, abc_text))
 
     # If no crescendo found, return original text
-    if not cresc_matches:
+    if not dim_matches:
         return abc_text
 
     modified_text = abc_text
     offset = 0  # Track text changes to adjust indices
 
-    for match in cresc_matches:
-        cresc_end = match.end() + offset  # Adjust for previous insertions
+    for match in dim_matches:
+        dim_end = match.end() + offset  # Adjust for previous insertions
+        curr_voice = get_previous_voice(modified_text, dim_end)  # Voice of the found dim.
 
         # Add !>(! right after dim.
-        modified_text = modified_text[:cresc_end] + ' !>(!' + modified_text[cresc_end:]
+        modified_text = modified_text[:dim_end] + ' !>(!' + modified_text[dim_end:]
         offset += 4  # Adjust for the length of '!>(!'
 
-        # Search for the next dynamic marking after dim.
-        dynamic_match = re.search(dynamic_pattern, modified_text[cresc_end:])
+        # Search for the next dynamic marking after dim
+        dynamic_matchs = list(re.finditer(dynamic_pattern, modified_text[dim_end:]))
 
-        if dynamic_match:
-            dyn_start = cresc_end + dynamic_match.start()
+        if dynamic_matchs:
+            for dynamic_match in dynamic_matchs:
+                dyn_start = dim_end + dynamic_match.start()
+                # Add only if the previous voice is the same as before
+                if curr_voice != None and get_previous_voice(modified_text, dyn_start) != curr_voice:
+                    continue
 
-            # Add !>)! right before the dynamic marking
-            modified_text = modified_text[:dyn_start] + '!>)! ' + modified_text[dyn_start:]
-            offset += 4  # Adjust for the length of '!>)!'
+                # Add !>)! right before the dynamic marking
+                modified_text = modified_text[:dyn_start] + '!>)! ' + modified_text[dyn_start:]
+                offset += 4  # Adjust for the length of '!>)!'
+
+                break
 
     return modified_text
 
