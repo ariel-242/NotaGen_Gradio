@@ -282,6 +282,9 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
 
         failure_flag = False
 
+        metadata_K_changed_flag = False
+        metadata_M_changed_flag = False
+
         bos_patch = [patchilizer.bos_token_id] * (PATCH_SIZE - 1) + [patchilizer.eos_token_id]
 
         start_time = time.time()
@@ -312,15 +315,25 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
             if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith(
                     'K:') and metadata_K != None and metadata_K != "":
                 predicted_patch = [ord(c) for c in f'K:{metadata_K}']
+                metadata_K_changed_flag = True
             if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith(
                     'M:') and metadata_M != None and metadata_M != "":
                 predicted_patch = [ord(c) for c in f'M:{metadata_M}']
+                metadata_M_changed_flag = True
+
             # todo Q
 
             if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith('[r:'):  # start with [r:0/
                 tunebody_flag = True
+
+                add_to_start_metadata = ""
+                if not metadata_K_changed_flag and metadata_K != None and metadata_K != "":
+                    add_to_start_metadata += f'K:{metadata_K}\n'
+                if not metadata_M_changed_flag and metadata_M != None and metadata_M != "":
+                    add_to_start_metadata += f'M:{metadata_M}\n'
+
                 if num_bars != None and num_bars > 0:
-                    predicted_patch = [ord(c) for c in f'[r:0/{int(num_bars)}]']
+                    predicted_patch = [ord(c) for c in add_to_start_metadata + f'[r:0/{int(num_bars)}]']
                 else:
                     r0_patch = torch.tensor([ord(c) for c in '[r:0/']).unsqueeze(0).to(device)
                     temp_input_patches = torch.concat([input_patches, r0_patch], axis=-1)
@@ -329,7 +342,7 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                                                      top_k=top_k,
                                                      top_p=top_p,
                                                      temperature=temperature)
-                    predicted_patch = [ord(c) for c in '[r:0/'] + predicted_patch
+                    predicted_patch = [ord(c) for c in add_to_start_metadata + '[r:0/'] + predicted_patch
             if predicted_patch[0] == patchilizer.bos_token_id and predicted_patch[1] == patchilizer.eos_token_id:
                 end_flag = True
                 break
