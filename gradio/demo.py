@@ -90,7 +90,7 @@ def save_and_convert(abc_content, period, composer, instrumentation):
 def generate_music(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p, temperature):
     if (period, composer, instrumentation) not in valid_combinations:
         raise gr.Error("Invalid prompt combination! Please re-select from the period options")
-    if model_name not in [entry.name for entry in os.scandir("../gradio/models") if entry.is_file() and entry.name != "NONE"]:
+    if model_name not in [entry.name for entry in os.scandir("models") if entry.is_file() and entry.name != "NONE"]:
         raise gr.Error("Invalid Model Name! Please re-select from the config options")
 
 
@@ -102,7 +102,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     def run_inference():
         try:
-            result_container.append(inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, f"../gradio/models/{model_name}", seed, top_k, top_p, temperature))
+            result_container.append(inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, f"models/{model_name}", seed, top_k, top_p, temperature))
         finally:
             sys.stdout = original_stdout
 
@@ -154,7 +154,7 @@ with gr.Blocks() as demo:
 
             # Add a collapsible section for configuration parameters
             with gr.Accordion("Config Parameters", open=False):
-                models = [entry.name for entry in os.scandir("../gradio/models") if entry.is_file() and entry.name != "NONE"]
+                models = [entry.name for entry in os.scandir("models") if entry.is_file() and entry.name != "NONE"]
                 model_name = gr.Dropdown(
                     choices=models,
                     label="Model Name",
