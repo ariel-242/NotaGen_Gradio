@@ -167,15 +167,15 @@ with gr.Blocks() as demo:
 
             # Add a new collapsible section for tune parameters
             with gr.Accordion("Tune Parameters", open=False):
-                num_bars = gr.Number(minimum=1, label="Number of Bars", value="None")
+                num_bars = gr.Number(minimum=0, precision=0, label="Number of Bars", value=0, info="For letting the Model to choose the Number of Bars, enter 0.")
                 metadata_K = gr.Dropdown(
-                    choices=["C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"],
+                    choices=["None", "C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"],
                     label="Key Signature",
                     value="None",
                 )
-                metadata_M = gr.Textbox( # todo better handling, check for validity / dropdown
+                metadata_M = gr.Textbox(  # todo better handling, check for validity / dropdown
                     label="Time Signature",
-                    value="None",
+                    value="",
                 )
 
             generate_btn = gr.Button("Generate!", variant="primary")
