@@ -1,4 +1,3 @@
-
 import os
 import time
 import torch
@@ -18,27 +17,46 @@ else:
 
 patchilizer = Patchilizer()
 
-patch_config = GPT2Config(num_hidden_layers=PATCH_NUM_LAYERS,
-                          max_length=PATCH_LENGTH,
-                          max_position_embeddings=PATCH_LENGTH,
-                          n_embd=HIDDEN_SIZE,
-                          num_attention_heads=HIDDEN_SIZE // 64,
-                          vocab_size=1)
-byte_config = GPT2Config(num_hidden_layers=CHAR_NUM_LAYERS,
-                         max_length=PATCH_SIZE + 1,
-                         max_position_embeddings=PATCH_SIZE + 1,
-                         hidden_size=HIDDEN_SIZE,
-                         num_attention_heads=HIDDEN_SIZE // 64,
-                         vocab_size=128)
 
-model = NotaGenLMHeadModel(encoder_config=patch_config, decoder_config=byte_config)
+def get_model(model_path):
+    patch_config = GPT2Config(num_hidden_layers=PATCH_NUM_LAYERS,
+                              max_length=PATCH_LENGTH,
+                              max_position_embeddings=PATCH_LENGTH,
+                              n_embd=HIDDEN_SIZE,
+                              num_attention_heads=HIDDEN_SIZE // 64,
+                              vocab_size=1)
+    byte_config = GPT2Config(num_hidden_layers=CHAR_NUM_LAYERS,
+                             max_length=PATCH_SIZE + 1,
+                             max_position_embeddings=PATCH_SIZE + 1,
+                             hidden_size=HIDDEN_SIZE,
+                             num_attention_heads=HIDDEN_SIZE // 64,
+                             vocab_size=128)
 
-print("Parameter Number: " + str(sum(p.numel() for p in model.parameters() if p.requires_grad)))
+    model = NotaGenLMHeadModel(encoder_config=patch_config, decoder_config=byte_config)
 
-checkpoint = torch.load(INFERENCE_WEIGHTS_PATH, map_location=torch.device(device))
-model.load_state_dict(checkpoint['model'])
-model = model.to(device)
-model.eval()
+    print("Parameter Number: " + str(sum(p.numel() for p in model.parameters() if p.requires_grad)))
+
+    checkpoint = torch.load(model_path, map_location=torch.device(device))
+    model.load_state_dict(checkpoint['model'])
+    model = model.to(device)
+    model.eval()
+
+    return model
+
+
+# Function to set the seed in PyTorch and other libraries
+def set_seed(seed):
+    # Ensure the seed is an integer
+    seed = int(seed)
+
+    # Set seeds for reproducibility
+    random.seed(seed)  # Python's random module
+    torch.manual_seed(seed)  # PyTorch
+    if torch.cuda.is_available():  # CUDA (if using GPU)
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+
+    print(f"Seed set to: {seed} (type: {type(seed)})")
 
 
 def add_cresc_dynamic_markers(abc_text):
@@ -114,8 +132,8 @@ def add_dim_dynamic_markers(abc_text):
 
     return modified_text
 
-def rest_unreduce(abc_lines):
 
+def rest_unreduce(abc_lines):
     tunebody_index = None
     for i in range(len(abc_lines)):
         if '[V:' in abc_lines[i]:
@@ -163,7 +181,7 @@ def rest_unreduce(abc_lines):
             line_bar_dict[key] = value
 
         # calculate duration and collect barline
-        dur_dict = {}  
+        dur_dict = {}
         for symbol, bartext in line_bar_dict.items():
             right_barline = ''.join(re.split(Barline_regexPattern, bartext)[-2:])
             bartext = bartext[:-len(right_barline)]
@@ -180,7 +198,7 @@ def rest_unreduce(abc_lines):
         try:
             ref_dur = max(dur_dict, key=dur_dict.get)
         except:
-            pass    # use last ref_dur
+            pass  # use last ref_dur
 
         if i == 0:
             prefix_left_barline = line.split('[V:')[0]
@@ -204,9 +222,12 @@ def rest_unreduce(abc_lines):
     return unreduced_lines
 
 
-def inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, top_k, top_p, temperature):
+def inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_path, seed, top_k, top_p,
+                    temperature):
+    set_seed(seed)
+    model = get_model(model_path)
 
-    prompt_lines=[
+    prompt_lines = [
         '%' + period + '\n',
         '%' + composer + '\n',
         '%' + instrumentation + '\n']
@@ -224,7 +245,7 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
         print(''.join(byte_list), end='')
 
         prompt_patches = [[ord(c) for c in patch] + [patchilizer.special_token_id] * (PATCH_SIZE - len(patch)) for patch
-                            in prompt_patches]
+                          in prompt_patches]
         prompt_patches.insert(0, bos_patch)
 
         input_patches = torch.tensor(prompt_patches, device=device).reshape(1, -1)
@@ -236,14 +257,16 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
 
         while True:
             predicted_patch = model.generate(input_patches.unsqueeze(0),
-                                                top_k=top_k,
-                                                top_p=top_p,
-                                                temperature=temperature)
+                                             top_k=top_k,
+                                             top_p=top_p,
+                                             temperature=temperature)
 
             # metadata parameters
-            if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith('K:') and metadata_K != None and metadata_K != "":
+            if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith(
+                    'K:') and metadata_K != None and metadata_K != "":
                 predicted_patch = [ord(c) for c in f'K:{metadata_K}']
-            if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith('M:') and metadata_M != None and metadata_M != "":
+            if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith(
+                    'M:') and metadata_M != None and metadata_M != "":
                 predicted_patch = [ord(c) for c in f'M:{metadata_M}']
             # todo Q
 
@@ -256,9 +279,9 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                     temp_input_patches = torch.concat([input_patches, r0_patch], axis=-1)
 
                     predicted_patch = model.generate(temp_input_patches.unsqueeze(0),
-                                                        top_k=top_k,
-                                                        top_p=top_p,
-                                                        temperature=temperature)
+                                                     top_k=top_k,
+                                                     top_p=top_p,
+                                                     temperature=temperature)
                     predicted_patch = [ord(c) for c in '[r:0/'] + predicted_patch
             if predicted_patch[0] == patchilizer.bos_token_id and predicted_patch[1] == patchilizer.eos_token_id:
                 end_flag = True
@@ -279,10 +302,10 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
             predicted_patch = torch.tensor([predicted_patch], device=device)  # (1, 16)
             input_patches = torch.cat([input_patches, predicted_patch], dim=1)  # (1, 16 * patch_len)
 
-            if len(byte_list) > 102400:  
+            if len(byte_list) > 102400:
                 failure_flag = True
                 break
-            if time.time() - start_time > 20 * 60:  
+            if time.time() - start_time > 20 * 60:
                 failure_flag = True
                 break
 
@@ -303,7 +326,7 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 tunebody_lines = abc_lines[tunebody_index:]
 
                 metadata_lines = [line + '\n' for line in metadata_lines]
-                if not abc_code.endswith('\n'):  
+                if not abc_code.endswith('\n'):
                     tunebody_lines = [tunebody_lines[i] + '\n' for i in range(len(tunebody_lines) - 1)] + [
                         tunebody_lines[-1]]
                 else:
@@ -332,15 +355,13 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 failure_flag = True
                 pass
             else:
-                unreduced_abc_lines = [line for line in unreduced_abc_lines if not(line.startswith('%') and not line.startswith('%%'))]
+                unreduced_abc_lines = [line for line in unreduced_abc_lines if
+                                       not (line.startswith('%') and not line.startswith('%%'))]
                 unreduced_abc_lines = ['X:1\n'] + unreduced_abc_lines
                 unreduced_abc_text = ''.join(unreduced_abc_lines)
                 fixed_cresc_abc_text = add_cresc_dynamic_markers(unreduced_abc_text)
                 fixed_dim_abc_text = add_dim_dynamic_markers(fixed_cresc_abc_text)
                 return fixed_dim_abc_text
-
-        
-
 
 
 if __name__ == '__main__':
