@@ -102,7 +102,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     def run_inference():
         try:
-            result_container.append(inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, f"gradio/models/{model_name}", seed, top_k, top_p, temperature))
+            result_container.append(inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, f"../gradio/models/{model_name}", seed, top_k, top_p, temperature))
         finally:
             sys.stdout = original_stdout
 
