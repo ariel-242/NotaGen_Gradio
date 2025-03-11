@@ -9,6 +9,7 @@ from abctoolkit.transpose import Note_list, Pitch_sign_list
 from abctoolkit.duration import calculate_bartext_duration
 
 Note_list = Note_list + ['z', 'x']
+curr_model_path = INFERENCE_WEIGHTS_PATH
 
 if torch.cuda.is_available():
     device = torch.device("cuda")
@@ -44,6 +45,9 @@ def get_model(model_path):
     return model
 
 
+model = get_model(curr_model_path)
+
+
 # Function to set the seed in PyTorch and other libraries
 def set_seed(seed):
     # Ensure the seed is an integer
@@ -57,6 +61,7 @@ def set_seed(seed):
         torch.cuda.manual_seed_all(seed)
 
     print(f"Seed set to: {seed} (type: {type(seed)})")
+
 
 def get_previous_voice(text, index):
     """
@@ -259,7 +264,9 @@ def rest_unreduce(abc_lines):
 def inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_path, seed, top_k, top_p,
                     temperature):
     set_seed(seed)
-    model = get_model(model_path)
+    if model == None or model_path != curr_model_path:
+        curr_model_path = model_path
+        model = get_model(curr_model_path)
 
     prompt_lines = [
         '%' + period + '\n',
@@ -290,6 +297,7 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
         tunebody_flag = False
 
         while True:
+            set_seed(seed)
             predicted_patch = model.generate(input_patches.unsqueeze(0),
                                              top_k=top_k,
                                              top_p=top_p,
@@ -311,7 +319,7 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 else:
                     r0_patch = torch.tensor([ord(c) for c in '[r:0/']).unsqueeze(0).to(device)
                     temp_input_patches = torch.concat([input_patches, r0_patch], axis=-1)
-
+                    set_seed(seed)
                     predicted_patch = model.generate(temp_input_patches.unsqueeze(0),
                                                      top_k=top_k,
                                                      top_p=top_p,
