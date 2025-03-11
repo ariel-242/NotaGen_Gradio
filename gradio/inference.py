@@ -332,7 +332,7 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 if not metadata_M_changed_flag and metadata_M not in [None, "", "None"]:
                     add_to_start_metadata += f'M:{metadata_M}\n'
 
-                if num_bars != None and num_bars > 0:
+                if num_bars != None and num_bars not in [0, "None", "", None]:
                     predicted_patch = [ord(c) for c in add_to_start_metadata + f'[r:0/{int(num_bars)}]']
                 else:
                     r0_patch = torch.tensor([ord(c) for c in '[r:0/']).unsqueeze(0).to(device)

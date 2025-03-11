@@ -160,14 +160,14 @@ with gr.Blocks() as demo:
                     label="Model Name",
                     value=models[0],
                 )
-                seed = gr.Slider(minimum=0, maximum=100000000000, step=1, value=random.randint(0, 100000000000), label="Seed")
+                seed = gr.Slider(minimum=0, maximum=100000000, step=1, value=random.randint(0, 100000000), label="Seed")
                 top_k = gr.Slider(minimum=1, maximum=20, value=config.TOP_K, label="Top K")
                 top_p = gr.Slider(minimum=0.1, maximum=1.0, value=config.TOP_P, label="Top P")
                 temperature = gr.Slider(minimum=0.1, maximum=2.0, value=config.TEMPERATURE, label="Temperature")
 
             # Add a new collapsible section for tune parameters
             with gr.Accordion("Tune Parameters", open=False):
-                num_bars = gr.Number(label="Number of Bars", value="None")
+                num_bars = gr.Number(minimum=1, precision=0, label="Number of Bars", value="None")
                 metadata_K = gr.Dropdown(
                     choices=["C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"],
                     label="Key Signature",
