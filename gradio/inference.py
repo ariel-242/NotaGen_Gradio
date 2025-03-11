@@ -74,8 +74,8 @@ def get_previous_voice(text, index):
     # Return the last match if found
     return matches[-1].group(0) if matches else None
 
-def add_cresc_dynamic_markers(abc_text):
 
+def add_cresc_dynamic_markers(abc_text):
     # Regex pattern for finding the cresc annotation
     cresc_pattern = r'(?i)("["_^<>@][^"]*cresc[^"]*")'
 
@@ -89,32 +89,34 @@ def add_cresc_dynamic_markers(abc_text):
     if not cresc_matches:
         return abc_text
 
-    modified_text = abc_text
-    offset = 0  # Track text changes to adjust indices
+    start_indexes = []
+    end_indexes = []
 
     for match in cresc_matches:
-        cresc_end = match.end() + offset  # Adjust for previous insertions
-        curr_voice = get_previous_voice(modified_text, cresc_end) # Voice of the found cresc
+        cresc_end = match.end()  # Adjust for previous insertions
+        curr_voice = get_previous_voice(abc_text, cresc_end)  # Voice of the found cresc
 
-        # Add !<(! right after cresc
-        modified_text = modified_text[:cresc_end] + ' !<(!' + modified_text[cresc_end:]
-        offset += 4  # Adjust for the length of '!<(!'
+        start_indexes.append(cresc_end)
 
         # Search for the next dynamic marking after cresc
-        dynamic_matchs = list(re.finditer(dynamic_pattern, modified_text[cresc_end:]))
+        dynamic_matchs = list(re.finditer(dynamic_pattern, abc_text[cresc_end:]))
 
         if dynamic_matchs:
             for dynamic_match in dynamic_matchs:
                 dyn_start = cresc_end + dynamic_match.start()
                 # Add only if the previous voice is the same as before
-                if curr_voice != None and get_previous_voice(modified_text, dyn_start) != curr_voice:
+                if curr_voice != None and get_previous_voice(abc_text, dyn_start) != curr_voice:
                     continue
 
-                # Add !<)! right before the dynamic marking
-                modified_text = modified_text[:dyn_start] + '!<)! ' + modified_text[dyn_start:]
-                offset += 4  # Adjust for the length of '!<)!'
-
+                end_indexes.append(dyn_start)
                 break
+
+    modified_text = abc_text
+    offset = 0  # Track text changes to adjust indices
+    add_indexes = sorted([(i, '!<(!') for i in start_indexes] + [(i, '!<)!') for i in end_indexes], key=lambda x: x[0])
+    for i, str in add_indexes:
+        modified_text = modified_text[:i + offset] + str + modified_text[i + offset:]
+        offset += len(str)
 
     return modified_text
 
@@ -133,32 +135,34 @@ def add_dim_dynamic_markers(abc_text):
     if not dim_matches:
         return abc_text
 
-    modified_text = abc_text
-    offset = 0  # Track text changes to adjust indices
+    start_indexes = []
+    end_indexes = []
 
     for match in dim_matches:
-        dim_end = match.end() + offset  # Adjust for previous insertions
-        curr_voice = get_previous_voice(modified_text, dim_end)  # Voice of the found dim.
+        dim_end = match.end()  # Adjust for previous insertions
+        curr_voice = get_previous_voice(abc_text, dim_end)  # Voice of the found dim
 
-        # Add !>(! right after dim.
-        modified_text = modified_text[:dim_end] + ' !>(!' + modified_text[dim_end:]
-        offset += 4  # Adjust for the length of '!>(!'
+        start_indexes.append(dim_end)
 
         # Search for the next dynamic marking after dim
-        dynamic_matchs = list(re.finditer(dynamic_pattern, modified_text[dim_end:]))
+        dynamic_matchs = list(re.finditer(dynamic_pattern, abc_text[dim_end:]))
 
         if dynamic_matchs:
             for dynamic_match in dynamic_matchs:
                 dyn_start = dim_end + dynamic_match.start()
                 # Add only if the previous voice is the same as before
-                if curr_voice != None and get_previous_voice(modified_text, dyn_start) != curr_voice:
+                if curr_voice != None and get_previous_voice(abc_text, dyn_start) != curr_voice:
                     continue
 
-                # Add !>)! right before the dynamic marking
-                modified_text = modified_text[:dyn_start] + '!>)! ' + modified_text[dyn_start:]
-                offset += 4  # Adjust for the length of '!>)!'
-
+                end_indexes.append(dyn_start)
                 break
+
+    modified_text = abc_text
+    offset = 0  # Track text changes to adjust indices
+    add_indexes = sorted([(i, '!>(!') for i in start_indexes] + [(i, '!>)!') for i in end_indexes], key=lambda x: x[0])
+    for i, str in add_indexes:
+        modified_text = modified_text[:i + offset] + str + modified_text[i + offset:]
+        offset += len(str)
 
     return modified_text
 
