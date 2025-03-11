@@ -313,11 +313,11 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
 
             # metadata parameters
             if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith(
-                    'K:') and metadata_K != None and metadata_K != "":
+                    'K:') and metadata_K not in [None, "", "None"]:
                 predicted_patch = [ord(c) for c in f'K:{metadata_K}']
                 metadata_K_changed_flag = True
             if not tunebody_flag and patchilizer.decode([predicted_patch]).startswith(
-                    'M:') and metadata_M != None and metadata_M != "":
+                    'M:') and metadata_M not in [None, "", "None"]:
                 predicted_patch = [ord(c) for c in f'M:{metadata_M}']
                 metadata_M_changed_flag = True
 
@@ -327,9 +327,9 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 tunebody_flag = True
 
                 add_to_start_metadata = ""
-                if not metadata_K_changed_flag and metadata_K != None and metadata_K != "":
+                if not metadata_K_changed_flag and metadata_K not in [None, "", "None"]:
                     add_to_start_metadata += f'K:{metadata_K}\n'
-                if not metadata_M_changed_flag and metadata_M != None and metadata_M != "":
+                if not metadata_M_changed_flag and metadata_M not in [None, "", "None"]:
                     add_to_start_metadata += f'M:{metadata_M}\n'
 
                 if num_bars != None and num_bars > 0:
