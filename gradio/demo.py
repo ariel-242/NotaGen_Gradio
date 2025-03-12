@@ -160,7 +160,7 @@ with gr.Blocks() as demo:
                     label="Model Name",
                     value=models[0],
                 )
-                seed = gr.Slider(minimum=0, maximum=100000000, step=1, value=random.randint(0, 100000000), label="Seed")
+                seed = gr.Slider(minimum=-1, maximum=100000000, step=1, value=-1, label="Seed", info="For Random Seed, Enter -1 (minimum value).")
                 top_k = gr.Slider(minimum=1, maximum=20, value=config.TOP_K, label="Top K")
                 top_p = gr.Slider(minimum=0.1, maximum=1.0, value=config.TOP_P, label="Top P")
                 temperature = gr.Slider(minimum=0.1, maximum=2.0, value=config.TEMPERATURE, label="Temperature")

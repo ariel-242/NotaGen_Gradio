@@ -53,7 +53,8 @@ model = get_model(curr_model_path)
 # Function to set the seed in PyTorch and other libraries
 def set_seed(seed):
     # Ensure the seed is an integer
-    seed = int(seed)
+    if seed != None:
+        seed = int(seed)
 
     # Set seeds for all libraries
     random.seed(seed)  # Python's random module
@@ -270,6 +271,10 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                     temperature):
     global model
     global curr_model_path
+    if seed == -1:  # rand seed
+        set_seed(None)
+        seed = random.randint(0, 100000000)
+    print("Seed =", seed)
     set_seed(seed)
     if model == None or model_path != curr_model_path:
         curr_model_path = model_path
