@@ -272,7 +272,7 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
     global model
     global curr_model_path
     if seed == -1:  # rand seed
-        set_seed(None)
+        random.seed(None)
         seed = random.randint(0, 100000000)
     print("Seed =", seed)
     set_seed(seed)
