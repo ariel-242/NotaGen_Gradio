@@ -86,9 +86,10 @@ def get_previous_voice(text, index):
 def add_cresc_dynamic_markers(abc_text):
     # Regex pattern for finding the cresc annotation
     cresc_pattern = r'(?i)("["_^<>@][^"]*cresc[^"]*")'
+    dim_pattern = r'(?i)("["_^<>@][^"]*dim.[^"]*")'  # todo maybe 'dim' and not 'dim.'
 
     # Regex pattern for finding the next dynamic marking (!p!, !mp!, !mf!, etc.)
-    dynamic_pattern = r'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!)'
+    dynamic_pattern = f'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!|{dim_pattern}|{cresc_pattern})'
 
     # Find all crescendo matches
     cresc_matches = list(re.finditer(cresc_pattern, abc_text))
@@ -132,9 +133,10 @@ def add_cresc_dynamic_markers(abc_text):
 def add_dim_dynamic_markers(abc_text):
     # Regex pattern for finding the cresc annotation
     dim_pattern = r'(?i)("["_^<>@][^"]*dim.[^"]*")'  # todo maybe 'dim' and not 'dim.'
+    cresc_pattern = r'(?i)("["_^<>@][^"]*cresc[^"]*")'
 
     # Regex pattern for finding the next dynamic marking (!p!, !mp!, !mf!, etc.)
-    dynamic_pattern = r'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!)'
+    dynamic_pattern = f'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!|{dim_pattern}|{cresc_pattern})'
 
     # Find all crescendo matches
     dim_matches = list(re.finditer(dim_pattern, abc_text))
@@ -426,3 +428,106 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
 
 if __name__ == '__main__':
     inference_patch('Classical', 'Beethoven, Ludwig van', 'Keyboard')
+
+
+# %Romantic
+# %Chopin, Frederic
+# %Keyboard
+# %end
+# %%score { ( 1 4 ) | ( 2 3 ) }
+# L:1/8
+# Q:1/4=108
+# M:2/4
+# K:G
+# V:1 treble nm="Piano" snm="Pno."
+# V:4 treble
+# V:2 bass
+# V:3 bass
+# [r:0/86][V:1]"^Allegro moderato"!p! z4|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:1/85][V:2]z [D,G,B,]2 [D,G,B,]|:[V:3]G,,4|:
+# [r:2/84][V:1]{/G} (.B.d.e.g)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:3/83][V:1](!>!f2 ed)|[V:2]z [D,^G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:4/82][V:1]{/d} (.g.e.d.B)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:5/81][V:1](!>!d2 cA)|[V:2]z [_E,G,C]2 [E,G,C]|[V:3]G,,4|
+# [r:6/80][V:1]{/A} (.c.B.G.E)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:7/79][V:1](!>!G2 FD)|[V:2]z [D,A,C]2 [D,A,C]|[V:3]G,,4|
+# [r:8/78][V:1]{/D} (.F.E.C.A,)|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:9/77][V:1](!>!^A,2 B,G,)|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:10/76][V:1]{/G} (.B.d.e.g)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:11/75][V:1](!>!f2 ed)|[V:2]z [D,^G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:12/74][V:1]{/d} (.g.e.d.B)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:13/73][V:1](!>!d2 ^cA)|[V:2]z [E,G,^C]2 [E,G,C]|[V:3]G,,4|
+# [r:14/72][V:1]{/A} (.^c.B.G.E)|[V:2]z [E,G,^C]2 [E,G,C]|[V:3]G,,4|
+# [r:15/71][V:1](!>!e2 dB)|[V:2]z [F,A,D]2 [F,A,D]|[V:3]F,,4|
+# [r:16/70][V:1]{/B} (.d.^c.A.F)|[V:2]z [G,A,E]2 [G,A,]|[V:3]E,,2 A,,2|
+# [r:17/69][V:1](!>!E2 D) z:|[V:2]z ([G,A,-^C] [F,A,]) z:|[V:3](D,,2 D,) x:|
+# [r:18/68][V:1]!f!"^Animato" (!>!_e2 dc)|[V:2](!>!_E2 DC)|[V:4]z [FA]2 [FA]|
+# [r:19/67][V:1](!>!_A2 GF)|[V:2](!>!_A,2 G,F,)|[V:4]z [C_E]2 [CE]|
+# [r:20/66][V:1](!>!_E2 D^C)|[V:2](!>!_E,2 D,^C,)|[V:4]z [F,C]2 [F,C]|
+# [r:21/65][V:1](!>!C2 B,A,)|[V:2](!>!C,2 B,,A,,)|[V:4]z [D,F,]2 [D,F,]|
+# [r:22/64][V:1]!p! (!>!_E2 D_B,)|[V:2]z [_B,,_E,]2 [B,,E,]|[V:3]G,,,4|
+# [r:23/63][V:1](!>!_A2 G_E)|[V:2]z [_B,,_E,]2 [B,,E,]|[V:3]G,,,4|
+# [r:24/62][V:1](!>!_c2 _BG)|[V:2]z [_B,,_E,]2 [B,,E,]|[V:3]G,,,4|
+# [r:25/61][V:1](!>!_e2 _BG)|[V:2]z [_B,,_E,]2 [B,,E,]|[V:3]G,,,4|
+# [r:26/60][V:1]!f! (!>!_g2 =f_e)|[V:2][K:treble] (!>!_G2 =F_E)|[V:3][K:treble] x4|[V:4]z [Ac]2 [Ac]|
+# [r:27/59][V:1](!>!_c2 _BA)|[V:2][K:bass] (!>!_C2 _B,A,)|[V:3][K:bass] x4|[V:4]z [_E_G]2 [EG]|
+# [r:28/58][V:1](!>!_G2 =FE)|[V:2](!>!_G,2 =F,E,)|[V:4]z [A,_E]2 [A,E]|
+# [r:29/57][V:1](!>!_E2 DC)|[V:2](!>!_E,2 D,C,)|[V:4]z [=F,A,]2 [F,A,]|
+# [r:30/56][V:1]!p! (!>!_G2 =F_D)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_B,,,4|
+# [r:31/55][V:1](!>!_c2 _B_G)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_B,,,4|
+# [r:32/54][V:1](!>!__e2 _d__B)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_B,,,4|
+# [r:33/53][V:1](!>!__g2 _d__B)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]__B,,,4|
+# [r:34/52][V:1]"^poco riten."!pp! (!>!_g2 =f_e)|[V:2]z [_E,_G,_A,]2 [E,G,A,]|[V:3]_A,,,4|
+# [r:35/51][V:1](!>!_B2 c_a)|[V:2]z [_E,_G,_A,]2 [E,G,A,]|[V:3]_A,,,4|
+# [r:36/50][V:1](!>!_g2 =f_e)|[V:2]z [_E,_G,_A,]2 [E,G,A,]|[V:3]_A,,,4|
+# [r:37/49][V:1](!>!B2 c_a)|[V:2]z [_E,_G,_A,]2 [E,G,A,]|[V:3]_A,,,4|
+# [r:38/48][V:1]"^a tempo"!p!!>(! (f2 _ed)!>)!|[V:2]z [D,F,C]2 [D,F,C]|[V:3]_A,,,4|
+# [r:39/47][V:1]!>(! (_b2 af)!>)!|[V:2]z [D,F,C]2 [D,F,C]|[V:3]_A,,,4|
+# [r:40/46][V:1]!>(! (f2 _ed)!>)!|[V:2]z [D,F,C]2 [D,F,C]|[V:3]_A,,,4|
+# [r:41/45][V:1]!>(! (_b2 af)!>)!|[V:2]z [D,F,C]2 [D,F,C]|[V:3]_A,,,4|
+# [r:42/44][V:1]"_cresc." (_e'2 d'c')|[V:2]z [D,F,C]2 [D,F,C]|[V:3]_A,,,4|
+# [r:43/43][V:1](_b2 ag)|[V:2]z [_E,G,^C]2 [E,G,C]|[V:3]A,,,4|
+# [r:44/42][V:1]"_dim." (f2 _ed)|[V:2]z [F,A,D]2 [F,A,D]|[V:3]A,,,4|
+# [r:45/41][V:1](^c2 =cA)|[V:2]z [G,A,E]2 [G,A,F]|[V:3]A,,,4|
+# [r:46/40][V:1]!p!{/G} (.B.d.e.g)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:47/39][V:1](!>!f2 ed)|[V:2]z [D,^G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:48/38][V:1]{/d} (.g.e.d.B)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:49/37][V:1](!>!d2 cA)|[V:2]z [_E,G,C]2 [E,G,C]|[V:3]G,,4|
+# [r:50/36][V:1]{/A} (.c.B.G.E)|[V:2]z [D,G,B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:51/35][V:1](!>!G2 FD)|[V:2]z [D,A,C]2 [D,A,C]|[V:3]G,,4|
+# [r:52/34][V:1]{/D} (.F.E.C.A,)|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:53/33][V:1](!>!^A,2 B,G,)|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:54/32][V:1]!f!"^Animato"{/G} (.g._b.c'._d')|[V:2]z [_D,G,_B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:55/31][V:1](!>!_d'2 c'_b)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:56/30][V:1]{/_b} (._d'.b._a._g)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:57/29][V:1](!>!=f2 _ec)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:58/28][V:1]{/c} (._e._d.c._B)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:59/27][V:1](!>!_B2 AF)|[V:2]z [_D,_G,C]2 [D,G,C]|[V:3]_G,,4|
+# [r:60/26][V:1]{/F} (.A._G.=F._E)|[V:2]z [_D,_G,C]2 [D,G,C]|[V:3]_G,,4|
+# [r:61/25][V:1](!>!_E2 _D_B,)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_G,,4|
+# [r:62/24][V:1]!f!{/G} (.g._b.c'._d')|[V:2]z [_D,G,_B,]2 [D,G,B,]|[V:3]G,,4|
+# [r:63/23][V:1](!>!_d'2 c'_b)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:64/22][V:1]{/_b} (._d'.b._a._g)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:65/21][V:1](!>!=f2 _ec)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:66/20][V:1]{/c} (._e._d.c._B)|[V:2]z [_D,_G,_B,]2 [D,G,B,]|[V:3]_G,,4|
+# [r:67/19][V:1](!>!_B2 AF)|[V:2]z [_D,_G,C]2 [D,G,C]|[V:3]_G,,4|
+# [r:68/18][V:1]{/F} (.A._G.=F._E)|[V:2]z [_D,_G,C]2 [D,G,C]|[V:3]_G,,4|
+# [r:69/17][V:1]"_dim." (!>!_E2 _D_B,)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_G,,4|
+# [r:70/16][V:1](!>!_E2 _D_B,)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_G,,4|
+# [r:71/15][V:1](!>!_E2 _D_B,)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_G,,4|
+# [r:72/14][V:1](!>!_E2 _D_B,)|[V:2]z [_D,_G,]2 [D,G,]|[V:3]_G,,4|
+# [r:73/13][V:1]!pp! ([_B,D]4-|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:74/12][V:1][B,D]2 [G,_B,][B,D])|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:75/11][V:1](!>![C_E]4-|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:76/10][V:1][CE]2 [_B,D][A,C])|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:77/9][V:1][_B,D]4-|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:78/8][V:1][B,D]2 ([G,_B,][B,D])|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:79/7][V:1](!>![C_E]4-|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:80/6][V:1][CE]2 [_B,D][A,C])|[V:2]z [D,G,]2 [D,G,]|[V:3]G,,4|
+# [r:81/5][V:1][_B,D] z z2|[V:2][G,,D,G,] z z2|
+# [r:82/4][V:1]{/^C} .[_B,D] z z2|[V:2].[G,,D,G,] z z2|
+# [r:83/3][V:1]{/^C} .[_B,D] z z2|[V:2].[G,,D,G,] z z2|
+# [r:84/2][V:1]{/^c} .[_Bd] z z2|[V:2].[G,DG] z z2|
+# [r:85/1][V:1][K:bass]!ff! !^![G,,_B,,D,G,]4-|[V:2]!8vb(! !^![G,,,,_B,,,,D,,,]4-|[V:3]!8vb(! x4|[V:4][K:bass] x4|
+# [r:86/0][V:1][G,,B,,D,G,] z !fermata!z2|][V:2][G,,,,B,,,,D,,,]!8vb)! z !fermata!z2|][V:3]x!8vb)! x3|]
+#
