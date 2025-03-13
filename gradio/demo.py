@@ -30,15 +30,26 @@ stop_flag = False
 
 def update_components(period, composer):
     if not period:
-        return [gr.update(choices=[], value=None), gr.update(choices=[], value=None)]
+        return [
+            gr.Dropdown(choices=[], value=None, interactive=False),
+            gr.Dropdown(choices=[], value=None, interactive=False)
+        ]
 
     valid_composers = sorted({c for p, c, _ in valid_combinations if p == period})
     valid_instruments = sorted(
         {i for p, c, i in valid_combinations if p == period and c == composer}) if composer else []
 
     return [
-        gr.update(choices=valid_composers, value=composer if composer in valid_composers else None),
-        gr.update(choices=valid_instruments, value=None, interactive=bool(valid_instruments))
+        gr.Dropdown(
+            choices=valid_composers,
+            value=composer if composer in valid_composers else None,
+            interactive=True
+        ),
+        gr.Dropdown(
+            choices=valid_instruments,
+            value=None,
+            interactive=bool(valid_instruments)
+        )
     ]
 
 
