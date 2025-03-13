@@ -24,8 +24,9 @@ periods = sorted({p for p, _, _ in valid_combinations})
 composers = sorted({c for _, c, _ in valid_combinations})
 instruments = sorted({i for _, _, i in valid_combinations})
 
-# Flag to control the generation process
+# Global flag to control the generation process
 stop_generation = False
+generation_thread = None
 
 # Dynamic component updates
 def update_components(period, composer):
@@ -90,7 +91,7 @@ def save_and_convert(abc_content, period, composer, instrumentation):
 
 
 def generate_music(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p, temperature):
-    global stop_generation
+    global stop_generation, generation_thread
 
     if (period, composer, instrumentation) not in valid_combinations:
         raise gr.Error("Invalid prompt combination! Please re-select from the period options")
@@ -111,13 +112,13 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
         finally:
             sys.stdout = original_stdout
 
-    thread = threading.Thread(target=run_inference)
-    thread.start()
+    generation_thread = threading.Thread(target=run_inference)
+    generation_thread.start()
 
     process_output = ""
-    while thread.is_alive():
+    while generation_thread.is_alive():
         if stop_generation:
-            thread.join()  # Wait for the thread to finish
+            generation_thread.join()  # Wait for the thread to finish
             break
         try:
             text = output_queue.get(timeout=0.1)
@@ -136,12 +137,14 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
 
 def toggle_generate_button():
-    global stop_generation
+    global stop_generation, generation_thread
     if stop_generation:
         stop_generation = False
         return "Generate!", False
     else:
         stop_generation = True
+        if generation_thread and generation_thread.is_alive():
+            generation_thread.join()  # Ensure the thread is stopped
         return "Stop Generating", True
 
 
@@ -149,7 +152,7 @@ with gr.Blocks() as demo:
     gr.Markdown("## NotaGen")
 
     with gr.Row():
-        # 左侧栏
+        # Left column
         with gr.Column():
             period_dd = gr.Dropdown(
                 choices=periods,
@@ -207,7 +210,7 @@ with gr.Blocks() as demo:
                 elem_classes="process-output"
             )
 
-        # 右侧栏
+        # Right column
         with gr.Column():
             final_output = gr.Textbox(
                 label="Post-processed ABC notation scores",
