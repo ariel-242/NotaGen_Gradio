@@ -24,6 +24,8 @@ periods = sorted({p for p, _, _ in valid_combinations})
 composers = sorted({c for _, c, _ in valid_combinations})
 instruments = sorted({i for _, _, i in valid_combinations})
 
+# Flag to control the generation process
+stop_generation = False
 
 # Dynamic component updates
 def update_components(period, composer):
@@ -88,11 +90,14 @@ def save_and_convert(abc_content, period, composer, instrumentation):
 
 
 def generate_music(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p, temperature):
+    global stop_generation
+
     if (period, composer, instrumentation) not in valid_combinations:
         raise gr.Error("Invalid prompt combination! Please re-select from the period options")
     if model_name not in [entry.name for entry in os.scandir("models") if entry.is_file() and entry.name != "NONE"]:
         raise gr.Error("Invalid Model Name! Please re-select from the config options")
 
+    stop_generation = False  # Reset the stop flag
 
     output_queue = queue.Queue()
     original_stdout = sys.stdout
@@ -111,6 +116,9 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     process_output = ""
     while thread.is_alive():
+        if stop_generation:
+            thread.join()  # Wait for the thread to finish
+            break
         try:
             text = output_queue.get(timeout=0.1)
             process_output += text
@@ -125,6 +133,16 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     final_result = result_container[0] if result_container else ""
     yield process_output, final_result
+
+
+def toggle_generate_button():
+    global stop_generation
+    if stop_generation:
+        stop_generation = False
+        return "Generate!", False
+    else:
+        stop_generation = True
+        return "Stop Generating", True
 
 
 with gr.Blocks() as demo:
@@ -224,6 +242,14 @@ with gr.Blocks() as demo:
         generate_music,
         inputs=[period_dd, composer_dd, instrument_dd, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p, temperature],
         outputs=[process_output, final_output]
+    ).then(
+        toggle_generate_button,
+        outputs=[generate_btn]
+    )
+
+    generate_btn.click(
+        toggle_generate_button,
+        outputs=[generate_btn]
     )
 
     save_btn.click(
