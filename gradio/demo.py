@@ -24,11 +24,10 @@ periods = sorted({p for p, _, _ in valid_combinations})
 composers = sorted({c for _, c, _ in valid_combinations})
 instruments = sorted({i for _, _, i in valid_combinations})
 
-# Global flag to control the generation process
-stop_generation = False
-generation_thread = None
+# Global stop flag for generation
+stop_flag = False
 
-# Dynamic component updates
+
 def update_components(period, composer):
     if not period:
         return [
@@ -78,7 +77,7 @@ def save_and_convert(abc_content, period, composer, instrumentation):
     xml_filename = f"{filename_base}.xml"
     try:
         subprocess.run(
-            ["python", "abc2xml.py", '-o', '.', abc_filename, ],
+            ["python", "abc2xml.py", '-o', '.', abc_filename],
             check=True,
             capture_output=True,
             text=True
@@ -90,15 +89,16 @@ def save_and_convert(abc_content, period, composer, instrumentation):
     return f"Saved successfully: {abc_filename} -> {xml_filename}"
 
 
-def generate_music(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p, temperature):
-    global stop_generation, generation_thread
+def generate_music(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p,
+                   temperature):
+    global stop_flag
+    stop_flag = False  # Reset stop flag when starting
 
     if (period, composer, instrumentation) not in valid_combinations:
         raise gr.Error("Invalid prompt combination! Please re-select from the period options")
+
     if model_name not in [entry.name for entry in os.scandir("models") if entry.is_file() and entry.name != "NONE"]:
         raise gr.Error("Invalid Model Name! Please re-select from the config options")
-
-    stop_generation = False  # Reset the stop flag
 
     output_queue = queue.Queue()
     original_stdout = sys.stdout
@@ -108,17 +108,19 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     def run_inference():
         try:
-            result_container.append(inference_patch(period, composer, instrumentation, num_bars, metadata_K, metadata_M, f"models/{model_name}", seed, top_k, top_p, temperature))
+            result_container.append(inference_patch(
+                period, composer, instrumentation, num_bars, metadata_K, metadata_M,
+                f"models/{model_name}", seed, top_k, top_p, temperature
+            ))
         finally:
             sys.stdout = original_stdout
 
-    generation_thread = threading.Thread(target=run_inference)
-    generation_thread.start()
+    thread = threading.Thread(target=run_inference)
+    thread.start()
 
     process_output = ""
-    while generation_thread.is_alive():
-        if stop_generation:
-            generation_thread.join()  # Wait for the thread to finish
+    while thread.is_alive():
+        if stop_flag:  # Check if stop was requested
             break
         try:
             text = output_queue.get(timeout=0.1)
@@ -127,6 +129,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
         except queue.Empty:
             continue
 
+    # Handle stopping process
     while not output_queue.empty():
         text = output_queue.get()
         process_output += text
@@ -136,163 +139,64 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
     yield process_output, final_result
 
 
-def toggle_generate_button():
-    global stop_generation, generation_thread
-    if stop_generation:
-        stop_generation = False
-        return "Generate!", False
-    else:
-        stop_generation = True
-        if generation_thread and generation_thread.is_alive():
-            generation_thread.join()  # Ensure the thread is stopped
-        return "Stop Generating", True
+def stop_generation():
+    global stop_flag
+    stop_flag = True
 
 
 with gr.Blocks() as demo:
     gr.Markdown("## NotaGen")
 
     with gr.Row():
-        # Left column
         with gr.Column():
-            period_dd = gr.Dropdown(
-                choices=periods,
-                value=None,
-                label="Period",
-                interactive=True
-            )
-            composer_dd = gr.Dropdown(
-                choices=[],
-                value=None,
-                label="Composer",
-                interactive=False
-            )
-            instrument_dd = gr.Dropdown(
-                choices=[],
-                value=None,
-                label="Instrumentation",
-                interactive=False
-            )
+            period_dd = gr.Dropdown(choices=periods, value=None, label="Period", interactive=True)
+            composer_dd = gr.Dropdown(choices=[], value=None, label="Composer", interactive=False)
+            instrument_dd = gr.Dropdown(choices=[], value=None, label="Instrumentation", interactive=False)
 
-            # Add a collapsible section for configuration parameters
             with gr.Accordion("Config Parameters", open=False):
                 models = [entry.name for entry in os.scandir("models") if entry.is_file() and entry.name != "NONE"]
-                model_name = gr.Dropdown(
-                    choices=models,
-                    label="Model Name",
-                    value=models[0],
-                )
-                seed = gr.Slider(minimum=-1, maximum=100000000, step=1, value=-1, label="Seed", info="For Random Seed, Enter -1 (minimum value).")
+                model_name = gr.Dropdown(choices=models, label="Model Name", value=models[0])
+                seed = gr.Slider(minimum=-1, maximum=100000000, step=1, value=-1, label="Seed")
                 top_k = gr.Slider(minimum=1, maximum=20, value=config.TOP_K, label="Top K")
                 top_p = gr.Slider(minimum=0.1, maximum=1.0, value=config.TOP_P, label="Top P")
                 temperature = gr.Slider(minimum=0.1, maximum=2.0, value=config.TEMPERATURE, label="Temperature")
 
-            # Add a new collapsible section for tune parameters
             with gr.Accordion("Tune Parameters", open=False):
-                num_bars = gr.Number(minimum=0, precision=0, label="Number of Bars", value=0, info="For letting the Model to choose the Number of Bars, enter 0.")
-                metadata_K = gr.Dropdown(
-                    choices=["None", "C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"],
-                    label="Key Signature",
-                    value="None",
-                )
-                metadata_M = gr.Textbox(  # todo better handling, check for validity / dropdown
-                    label="Time Signature",
-                    value="",
-                )
+                num_bars = gr.Number(minimum=0, precision=0, label="Number of Bars", value=0)
+                metadata_K = gr.Dropdown(choices=["None", "C", "G", "D", "A"], label="Key Signature", value="None")
+                metadata_M = gr.Textbox(label="Time Signature", value="")
 
             generate_btn = gr.Button("Generate!", variant="primary")
+            stop_btn = gr.Button("Stop Generating!", visible=False)
 
-            process_output = gr.Textbox(
-                label="Generation process",
-                interactive=False,
-                lines=15,
-                max_lines=15,
-                placeholder="Generation progress will be shown here...",
-                elem_classes="process-output"
-            )
+            process_output = gr.Textbox(label="Generation process", interactive=False, lines=15)
 
-        # Right column
         with gr.Column():
-            final_output = gr.Textbox(
-                label="Post-processed ABC notation scores",
-                interactive=True,
-                lines=23,
-                placeholder="Post-processed ABC scores will be shown here...",
-                elem_classes="final-output"
-            )
+            final_output = gr.Textbox(label="Post-processed ABC notation scores", interactive=True, lines=23)
 
             with gr.Row():
                 save_btn = gr.Button("💾 Save as ABC & XML files", variant="secondary")
 
-            save_status = gr.Textbox(
-                label="Save Status",
-                interactive=False,
-                visible=True,
-                max_lines=2
-            )
+            save_status = gr.Textbox(label="Save Status", interactive=False, visible=True, max_lines=2)
 
-    period_dd.change(
-        update_components,
-        inputs=[period_dd, composer_dd],
-        outputs=[composer_dd, instrument_dd]
-    )
-    composer_dd.change(
-        update_components,
-        inputs=[period_dd, composer_dd],
-        outputs=[composer_dd, instrument_dd]
-    )
+    period_dd.change(update_components, inputs=[period_dd, composer_dd], outputs=[composer_dd, instrument_dd])
+    composer_dd.change(update_components, inputs=[period_dd, composer_dd], outputs=[composer_dd, instrument_dd])
 
     generate_btn.click(
         generate_music,
-        inputs=[period_dd, composer_dd, instrument_dd, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p, temperature],
+        inputs=[period_dd, composer_dd, instrument_dd, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p,
+                temperature],
         outputs=[process_output, final_output]
     ).then(
-        toggle_generate_button,
-        outputs=[generate_btn]
+        lambda: (gr.update(visible=False), gr.update(visible=True)), None, [generate_btn, stop_btn]
     )
 
-    generate_btn.click(
-        toggle_generate_button,
-        outputs=[generate_btn]
+    stop_btn.click(stop_generation, inputs=[], outputs=[]).then(
+        lambda: (gr.update(visible=True), gr.update(visible=False)), None, [generate_btn, stop_btn]
     )
 
-    save_btn.click(
-        save_and_convert,
-        inputs=[final_output, period_dd, composer_dd, instrument_dd],
-        outputs=[save_status]
-    )
-
-css = """
-.process-output {
-    background-color: #f0f0f0;
-    font-family: monospace;
-    padding: 10px;
-    border-radius: 5px;
-}
-.final-output {
-    background-color: #ffffff;
-    font-family: sans-serif;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.process-output textarea {
-    max-height: 500px !important;
-    overflow-y: auto !important;
-    white-space: pre-wrap;
-}
-
-"""
-css += """
-button#💾-save-convert:hover {
-    background-color: #ffe6e6;
-}
-"""
-
-demo.css = css
+    save_btn.click(save_and_convert, inputs=[final_output, period_dd, composer_dd, instrument_dd],
+                   outputs=[save_status])
 
 if __name__ == "__main__":
-    demo.launch(
-        server_name="0.0.0.0",
-        server_port=7861,
-        share=True
-    )
+    demo.launch(server_name="0.0.0.0", server_port=7861, share=True)
