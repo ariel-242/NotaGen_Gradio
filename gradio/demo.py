@@ -8,7 +8,7 @@ from inference import inference_patch
 import datetime
 import subprocess
 import os
-import config  # Import the config module to modify its parameters
+import config
 
 # Predefined valid combinations set
 with open('prompts.txt', 'r') as f:
@@ -24,32 +24,21 @@ periods = sorted({p for p, _, _ in valid_combinations})
 composers = sorted({c for _, c, _ in valid_combinations})
 instruments = sorted({i for _, _, i in valid_combinations})
 
-# Global stop flag for generation
+# Global stop flag
 stop_flag = False
 
 
 def update_components(period, composer):
     if not period:
-        return [
-            gr.Dropdown(choices=[], value=None, interactive=False),
-            gr.Dropdown(choices=[], value=None, interactive=False)
-        ]
+        return [gr.update(choices=[], value=None), gr.update(choices=[], value=None)]
 
     valid_composers = sorted({c for p, c, _ in valid_combinations if p == period})
     valid_instruments = sorted(
         {i for p, c, i in valid_combinations if p == period and c == composer}) if composer else []
 
     return [
-        gr.Dropdown(
-            choices=valid_composers,
-            value=composer if composer in valid_composers else None,
-            interactive=True
-        ),
-        gr.Dropdown(
-            choices=valid_instruments,
-            value=None,
-            interactive=bool(valid_instruments)
-        )
+        gr.update(choices=valid_composers, value=composer if composer in valid_composers else None),
+        gr.update(choices=valid_instruments, value=None, interactive=bool(valid_instruments))
     ]
 
 
@@ -67,8 +56,7 @@ def save_and_convert(abc_content, period, composer, instrumentation):
         raise gr.Error("Please complete a valid generation first before saving")
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    prompt_str = f"{period}_{composer}_{instrumentation}"
-    filename_base = f"{timestamp}_{prompt_str}"
+    filename_base = f"{timestamp}_{period}_{composer}_{instrumentation}"
 
     abc_filename = f"{filename_base}.abc"
     with open(abc_filename, "w", encoding="utf-8") as f:
@@ -76,15 +64,9 @@ def save_and_convert(abc_content, period, composer, instrumentation):
 
     xml_filename = f"{filename_base}.xml"
     try:
-        subprocess.run(
-            ["python", "abc2xml.py", '-o', '.', abc_filename],
-            check=True,
-            capture_output=True,
-            text=True
-        )
+        subprocess.run(["python", "abc2xml.py", '-o', '.', abc_filename], check=True)
     except subprocess.CalledProcessError as e:
-        error_msg = f"Conversion failed: {e.stderr}" if e.stderr else "Unknown error"
-        raise gr.Error(f"ABC to XML conversion failed: {error_msg}. Please try to generate another composition.")
+        raise gr.Error(f"ABC to XML conversion failed: {e}")
 
     return f"Saved successfully: {abc_filename} -> {xml_filename}"
 
@@ -92,7 +74,7 @@ def save_and_convert(abc_content, period, composer, instrumentation):
 def generate_music(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p,
                    temperature):
     global stop_flag
-    stop_flag = False  # Reset stop flag when starting
+    stop_flag = False  # Reset when starting
 
     if (period, composer, instrumentation) not in valid_combinations:
         raise gr.Error("Invalid prompt combination! Please re-select from the period options")
@@ -120,7 +102,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     process_output = ""
     while thread.is_alive():
-        if stop_flag:  # Check if stop was requested
+        if stop_flag:  # Stop if requested
             break
         try:
             text = output_queue.get(timeout=0.1)
@@ -129,7 +111,6 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
         except queue.Empty:
             continue
 
-    # Handle stopping process
     while not output_queue.empty():
         text = output_queue.get()
         process_output += text
@@ -183,16 +164,26 @@ with gr.Blocks() as demo:
     composer_dd.change(update_components, inputs=[period_dd, composer_dd], outputs=[composer_dd, instrument_dd])
 
     generate_btn.click(
+        lambda: gr.update(visible=False), outputs=[generate_btn]
+    ).then(
+        lambda: gr.update(visible=True), outputs=[stop_btn]
+    ).then(
         generate_music,
         inputs=[period_dd, composer_dd, instrument_dd, num_bars, metadata_K, metadata_M, model_name, seed, top_k, top_p,
                 temperature],
         outputs=[process_output, final_output]
     ).then(
-        lambda: (gr.update(visible=False), gr.update(visible=True)), None, [generate_btn, stop_btn]
+        lambda: gr.update(visible=True), outputs=[generate_btn]
+    ).then(
+        lambda: gr.update(visible=False), outputs=[stop_btn]
     )
 
-    stop_btn.click(stop_generation, inputs=[], outputs=[]).then(
-        lambda: (gr.update(visible=True), gr.update(visible=False)), None, [generate_btn, stop_btn]
+    stop_btn.click(
+        stop_generation, inputs=[], outputs=[]
+    ).then(
+        lambda: gr.update(visible=True), outputs=[generate_btn]
+    ).then(
+        lambda: gr.update(visible=False), outputs=[stop_btn]
     )
 
     save_btn.click(save_and_convert, inputs=[final_output, period_dd, composer_dd, instrument_dd],
