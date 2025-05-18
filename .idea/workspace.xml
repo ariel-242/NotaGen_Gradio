@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="try: stop generation btn, final?">
+      <change beforePath="$PROJECT_DIR$/gradio/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/abc2xml.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/demo.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/illustration.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/inference.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/models/NONE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/prompts.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradio/utils.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2u846GOPBFurY8o6n0I69zrxcdW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="NotaGen" is-module-sdk="true" working-directory="$PROJECT_DIR$">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="NotaGen" />
+        <option name="myWorkingDirectory" value="$PROJECT_DIR$" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="demo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="NotaGen" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gradio" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gradio/demo.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.demo" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="" />
+      <created>1741616698902</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1741616698902</updated>
+    </task>
+    <task id="LOCAL‎00001" summary="FIX MODELS">
+      <created>1741680947580</created>
+      <option name="number" value="LOCAL‎00001" />
+      <option name="presentableId" value="LOCAL‎00001" />
+      <updated>1741680947580</updated>
+    </task>
+    <task id="LOCAL‎00002" summary="FIX MODELS">
+      <created>1741681588329</created>
+      <option name="number" value="LOCAL‎00002" />
+      <option name="presentableId" value="LOCAL‎00002" />
+      <updated>1741681588329</updated>
+    </task>
+    <task id="LOCAL‎00003" summary="FIX MODELS">
+      <created>1741682067725</created>
+      <option name="number" value="LOCAL‎00003" />
+      <option name="presentableId" value="LOCAL‎00003" />
+      <updated>1741682067725</updated>
+    </task>
+    <task id="LOCAL‎00004" summary="FIX cresc">
+      <created>1741683961946</created>
+      <option name="number" value="LOCAL‎00004" />
+      <option name="presentableId" value="LOCAL‎00004" />
+      <updated>1741683961946</updated>
+    </task>
+    <task id="LOCAL‎00005" summary="FIX model loading">
+      <created>1741686625982</created>
+      <option name="number" value="LOCAL‎00005" />
+      <option name="presentableId" value="LOCAL‎00005" />
+      <updated>1741686625982</updated>
+    </task>
+    <task id="LOCAL‎00006" summary="FIX model loading">
+      <created>1741688373202</created>
+      <option name="number" value="LOCAL‎00006" />
+      <option name="presentableId" value="LOCAL‎00006" />
+      <updated>1741688373203</updated>
+    </task>
+    <task id="LOCAL‎00007" summary="FIX set seed">
+      <created>1741689672236</created>
+      <option name="number" value="LOCAL‎00007" />
+      <option name="presentableId" value="LOCAL‎00007" />
+      <updated>1741689672236</updated>
+    </task>
+    <task id="LOCAL‎00008" summary="FIX check if metadata changed, (if inputs K: / m: exist)">
+      <created>1741702560858</created>
+      <option name="number" value="LOCAL‎00008" />
+      <option name="presentableId" value="LOCAL‎00008" />
+      <updated>1741702560858</updated>
+    </task>
+    <task id="LOCAL‎00009" summary="improve if">
+      <created>1741702791345</created>
+      <option name="number" value="LOCAL‎00009" />
+      <option name="presentableId" value="LOCAL‎00009" />
+      <updated>1741702791345</updated>
+    </task>
+    <task id="LOCAL‎00010" summary="improve if">
+      <created>1741704503232</created>
+      <option name="number" value="LOCAL‎00010" />
+      <option name="presentableId" value="LOCAL‎00010" />
+      <updated>1741704503232</updated>
+    </task>
+    <task id="LOCAL‎00011" summary="num_bars not whole">
+      <created>1741704696127</created>
+      <option name="number" value="LOCAL‎00011" />
+      <option name="presentableId" value="LOCAL‎00011" />
+      <updated>1741704696129</updated>
+    </task>
+    <task id="LOCAL‎00012" summary="improved tune options">
+      <created>1741705339778</created>
+      <option name="number" value="LOCAL‎00012" />
+      <option name="presentableId" value="LOCAL‎00012" />
+      <updated>1741705339778</updated>
+    </task>
+    <task id="LOCAL‎00013" summary="include dim and cresc in dynamic_pattern">
+      <created>1741795524108</created>
+      <option name="number" value="LOCAL‎00013" />
+      <option name="presentableId" value="LOCAL‎00013" />
+      <updated>1741795524108</updated>
+    </task>
+    <task id="LOCAL‎00014" summary="rand seed option (-1)">
+      <created>1741796355326</created>
+      <option name="number" value="LOCAL‎00014" />
+      <option name="presentableId" value="LOCAL‎00014" />
+      <updated>1741796355326</updated>
+    </task>
+    <task id="LOCAL‎00015" summary="rand seed option (-1)">
+      <created>1741807894530</created>
+      <option name="number" value="LOCAL‎00015" />
+      <option name="presentableId" value="LOCAL‎00015" />
+      <updated>1741807894530</updated>
+    </task>
+    <task id="LOCAL‎00016" summary="try: stop generation btn">
+      <created>1741864214925</created>
+      <option name="number" value="LOCAL‎00016" />
+      <option name="presentableId" value="LOCAL‎00016" />
+      <updated>1741864214925</updated>
+    </task>
+    <task id="LOCAL‎00017" summary="try: stop generation btn">
+      <created>1741865553004</created>
+      <option name="number" value="LOCAL‎00017" />
+      <option name="presentableId" value="LOCAL‎00017" />
+      <updated>1741865553004</updated>
+    </task>
+    <task id="LOCAL‎00018" summary="try: stop generation btn">
+      <created>1741865934309</created>
+      <option name="number" value="LOCAL‎00018" />
+      <option name="presentableId" value="LOCAL‎00018" />
+      <updated>1741865934309</updated>
+    </task>
+    <task id="LOCAL‎00019" summary="try: stop generation btn">
+      <created>1741866309372</created>
+      <option name="number" value="LOCAL‎00019" />
+      <option name="presentableId" value="LOCAL‎00019" />
+      <updated>1741866309372</updated>
+    </task>
+    <task id="LOCAL‎00020" summary="try: stop generation btn">
+      <created>1741866578512</created>
+      <option name="number" value="LOCAL‎00020" />
+      <option name="presentableId" value="LOCAL‎00020" />
+      <updated>1741866578512</updated>
+    </task>
+    <task id="LOCAL‎00021" summary="try: stop generation btn, final?">
+      <created>1741869360568</created>
+      <option name="number" value="LOCAL‎00021" />
+      <option name="presentableId" value="LOCAL‎00021" />
+      <updated>1741869360568</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="FIX MODELS" />
+    <MESSAGE value="FIX cresc" />
+    <MESSAGE value="FIX model loading" />
+    <MESSAGE value="FIX set seed" />
+    <MESSAGE value="FIX check if metadata changed, (if inputs K: / m: exist)" />
+    <MESSAGE value="improve if" />
+    <MESSAGE value="num_bars not whole" />
+    <MESSAGE value="improved tune options" />
+    <MESSAGE value="include dim and cresc in dynamic_pattern" />
+    <MESSAGE value="rand seed option (-1)" />
+    <MESSAGE value="try: stop generation btn" />
+    <MESSAGE value="try: stop generation btn, final?" />
+    <option name="LAST_COMMIT_MESSAGE" value="try: stop generation btn, final?" />
+  </component>
+</project>

@@ -1,0 +1,112 @@
+Baroque_Bach, Johann Sebastian_Chamber
+Baroque_Bach, Johann Sebastian_Choral
+Baroque_Bach, Johann Sebastian_Keyboard
+Baroque_Bach, Johann Sebastian_Orchestral
+Baroque_Bach, Johann Sebastian_Vocal-Orchestral
+Baroque_Corelli, Arcangelo_Chamber
+Baroque_Corelli, Arcangelo_Orchestral
+Baroque_Handel, George Frideric_Chamber
+Baroque_Handel, George Frideric_Keyboard
+Baroque_Handel, George Frideric_Orchestral
+Baroque_Handel, George Frideric_Vocal-Orchestral
+Baroque_Scarlatti, Domenico_Keyboard
+Baroque_Vivaldi, Antonio_Chamber
+Baroque_Vivaldi, Antonio_Orchestral
+Baroque_Vivaldi, Antonio_Vocal-Orchestral
+Classical_Beethoven, Ludwig van_Art Song
+Classical_Beethoven, Ludwig van_Chamber
+Classical_Beethoven, Ludwig van_Keyboard
+Classical_Beethoven, Ludwig van_Orchestral
+Classical_Haydn, Joseph_Chamber
+Classical_Haydn, Joseph_Keyboard
+Classical_Haydn, Joseph_Orchestral
+Classical_Haydn, Joseph_Vocal-Orchestral
+Classical_Mozart, Wolfgang Amadeus_Chamber
+Classical_Mozart, Wolfgang Amadeus_Choral
+Classical_Mozart, Wolfgang Amadeus_Keyboard
+Classical_Mozart, Wolfgang Amadeus_Orchestral
+Classical_Mozart, Wolfgang Amadeus_Vocal-Orchestral
+Classical_Paradis, Maria Theresia von_Art Song
+Classical_Reichardt, Louise_Art Song
+Classical_Saint-Georges, Joseph Bologne_Chamber
+Classical_Schroter, Corona_Art Song
+Romantic_Bartok, Bela_Keyboard
+Romantic_Berlioz, Hector_Choral
+Romantic_Bizet, Georges_Art Song
+Romantic_Boulanger, Lili_Art Song
+Romantic_Boulton, Harold_Art Song
+Romantic_Brahms, Johannes_Art Song
+Romantic_Brahms, Johannes_Chamber
+Romantic_Brahms, Johannes_Choral
+Romantic_Brahms, Johannes_Keyboard
+Romantic_Brahms, Johannes_Orchestral
+Romantic_Burgmuller, Friedrich_Keyboard
+Romantic_Butterworth, George_Art Song
+Romantic_Chaminade, Cecile_Art Song
+Romantic_Chausson, Ernest_Art Song
+Romantic_Chopin, Frederic_Art Song
+Romantic_Chopin, Frederic_Keyboard
+Romantic_Cornelius, Peter_Art Song
+Romantic_Debussy, Claude_Art Song
+Romantic_Debussy, Claude_Keyboard
+Romantic_Dvorak, Antonin_Chamber
+Romantic_Dvorak, Antonin_Choral
+Romantic_Dvorak, Antonin_Keyboard
+Romantic_Dvorak, Antonin_Orchestral
+Romantic_Faisst, Clara_Art Song
+Romantic_Faure, Gabriel_Art Song
+Romantic_Faure, Gabriel_Chamber
+Romantic_Faure, Gabriel_Keyboard
+Romantic_Franz, Robert_Art Song
+Romantic_Gonzaga, Chiquinha_Art Song
+Romantic_Grandval, Clemence de_Art Song
+Romantic_Grieg, Edvard_Keyboard
+Romantic_Grieg, Edvard_Orchestral
+Romantic_Hensel, Fanny_Art Song
+Romantic_Holmes, Augusta Mary Anne_Art Song
+Romantic_Jaell, Marie_Art Song
+Romantic_Kinkel, Johanna_Art Song
+Romantic_Kralik, Mathilde_Art Song
+Romantic_Lang, Josephine_Art Song
+Romantic_Lehmann, Liza_Art Song
+Romantic_Liszt, Franz_Keyboard
+Romantic_Mayer, Emilie_Chamber
+Romantic_Medtner, Nikolay_Keyboard
+Romantic_Mendelssohn, Felix_Art Song
+Romantic_Mendelssohn, Felix_Chamber
+Romantic_Mendelssohn, Felix_Choral
+Romantic_Mendelssohn, Felix_Keyboard
+Romantic_Mendelssohn, Felix_Orchestral
+Romantic_Munktell, Helena_Art Song
+Romantic_Parratt, Walter_Choral
+Romantic_Prokofiev, Sergey_Keyboard
+Romantic_Rachmaninoff, Sergei_Choral
+Romantic_Rachmaninoff, Sergei_Keyboard
+Romantic_Ravel, Maurice_Art Song
+Romantic_Ravel, Maurice_Chamber
+Romantic_Ravel, Maurice_Keyboard
+Romantic_Saint-Saens, Camille_Chamber
+Romantic_Saint-Saens, Camille_Keyboard
+Romantic_Saint-Saens, Camille_Orchestral
+Romantic_Satie, Erik_Art Song
+Romantic_Satie, Erik_Keyboard
+Romantic_Schubert, Franz_Art Song
+Romantic_Schubert, Franz_Chamber
+Romantic_Schubert, Franz_Choral
+Romantic_Schubert, Franz_Keyboard
+Romantic_Schumann, Clara_Art Song
+Romantic_Schumann, Robert_Art Song
+Romantic_Schumann, Robert_Chamber
+Romantic_Schumann, Robert_Choral
+Romantic_Schumann, Robert_Keyboard
+Romantic_Scriabin, Aleksandr_Keyboard
+Romantic_Shostakovich, Dmitry_Chamber
+Romantic_Shostakovich, Dmitry_Keyboard
+Romantic_Sibelius, Jean_Keyboard
+Romantic_Smetana, Bedrich_Keyboard
+Romantic_Tchaikovsky, Pyotr_Keyboard
+Romantic_Tchaikovsky, Pyotr_Orchestral
+Romantic_Viardot, Pauline_Art Song
+Romantic_Warlock, Peter_Art Song
+Romantic_Wolf, Hugo_Art Song
+Romantic_Zumsteeg, Emilie_Art Song
