@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="default model name is not NONE">
+    <list default="true" id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="increase temperature_slider val to 4.0 from 2.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inference.py" beforeDir="false" afterPath="$PROJECT_DIR$/inference.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +43,7 @@
       </console-settings>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.inference">
     <configuration name="demo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="NotaGen" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -64,8 +65,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="inference" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="NotaGen" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/inference.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.inference" />
         <item itemvalue="Python.demo" />
       </list>
     </recent_temporary>
@@ -265,7 +288,13 @@
       <option name="presentableId" value="LOCAL‎00031" />
       <updated>1747561101341</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL‎00032" summary="increase temperature_slider val to 4.0 from 2.0">
+      <created>1747561205293</created>
+      <option name="number" value="LOCAL‎00032" />
+      <option name="presentableId" value="LOCAL‎00032" />
+      <updated>1747561205293</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -296,6 +325,7 @@
     <MESSAGE value="try: more components (pdf etc...)" />
     <MESSAGE value="added files" />
     <MESSAGE value="default model name is not NONE" />
-    <option name="LAST_COMMIT_MESSAGE" value="default model name is not NONE" />
+    <MESSAGE value="increase temperature_slider val to 4.0 from 2.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="increase temperature_slider val to 4.0 from 2.0" />
   </component>
 </project>
