@@ -357,7 +357,7 @@ with gr.Blocks() as demo:
             instrument_dd = gr.Dropdown(choices=[], value=None, label="Instrumentation", interactive=False)
 
             with gr.Accordion("Config Parameters", open=False):
-                model_choices = ["NONE"] + [entry.name for entry in os.scandir("models") if
+                model_choices = [entry.name for entry in os.scandir("models") if
                                             entry.is_file() and entry.name != "NONE"] if os.path.exists("models") else [
                     "NONE"]
                 model_name_dd = gr.Dropdown(choices=model_choices, label="Model Name",
