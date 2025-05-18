@@ -366,7 +366,7 @@ with gr.Blocks() as demo:
                                         info="For Random Seed, Enter -1.")
                 top_k_slider = gr.Slider(minimum=1, maximum=20, step=1, value=config.TOP_K, label="Top K")
                 top_p_slider = gr.Slider(minimum=0.01, maximum=1.0, step=0.01, value=config.TOP_P, label="Top P")
-                temperature_slider = gr.Slider(minimum=0.1, maximum=2.0, step=0.01, value=config.TEMPERATURE,
+                temperature_slider = gr.Slider(minimum=0.1, maximum=4.0, step=0.01, value=config.TEMPERATURE,
                                                label="Temperature")
 
             with gr.Accordion("Tune Parameters", open=False):
