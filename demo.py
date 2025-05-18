@@ -338,9 +338,6 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 def stop_generation_action():  # Renamed for clarity
     global stop_flag
     stop_flag = True
-    # Optionally try to join the thread here if you want the UI to wait,
-    # but generate_music already does a join.
-    return "Stop signal sent."  # Optional feedback
 
 
 # --- Gradio UI Definition ---
