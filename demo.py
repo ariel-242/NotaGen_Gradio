@@ -496,6 +496,6 @@ if __name__ == "__main__":
     demo.launch(
         server_name="0.0.0.0",
         server_port=7861,  # Kept your port
-        # share=True # Uncomment if needed
-        debug=True  # Helpful during development
+        share=True # Uncomment if needed
+        # debug=True  # Helpful during development
     )
