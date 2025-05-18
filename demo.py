@@ -248,7 +248,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
             raw_abc_result = inference_patch(
                 period=period, composer=composer, instrumentation=instrumentation,
                 num_bars=num_bars, metadata_K=metadata_K, metadata_M=metadata_M,
-                model_name=os.path.join(models_path, model_name_selected),  # Pass full path
+                model_path=os.path.join(models_path, model_name_selected),  # Pass full path
                 seed=seed_val, top_k=top_k_val, top_p=top_p_val, temperature=temperature_val,
                 # Add any other parameters inference_patch expects, like the stop_flag if it supports it
             )
