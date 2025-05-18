@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="try: stop generation btn, final?">
-      <change beforePath="$PROJECT_DIR$/gradio/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/abc2xml.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/demo.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/illustration.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/inference.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/models/NONE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/prompts.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradio/utils.py" beforeDir="false" />
-    </list>
+    <list default="true" id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="try: more components (pdf etc...)" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -213,7 +203,25 @@
       <option name="presentableId" value="LOCAL‎00021" />
       <updated>1741869360568</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL‎00022" summary="try: more components (pdf etc...)">
+      <created>1747556033502</created>
+      <option name="number" value="LOCAL‎00022" />
+      <option name="presentableId" value="LOCAL‎00022" />
+      <updated>1747556033502</updated>
+    </task>
+    <task id="LOCAL‎00023" summary="try: more components (pdf etc...)">
+      <created>1747556047529</created>
+      <option name="number" value="LOCAL‎00023" />
+      <option name="presentableId" value="LOCAL‎00023" />
+      <updated>1747556047529</updated>
+    </task>
+    <task id="LOCAL‎00024" summary="try: more components (pdf etc...)">
+      <created>1747556137134</created>
+      <option name="number" value="LOCAL‎00024" />
+      <option name="presentableId" value="LOCAL‎00024" />
+      <updated>1747556137134</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -241,6 +249,7 @@
     <MESSAGE value="rand seed option (-1)" />
     <MESSAGE value="try: stop generation btn" />
     <MESSAGE value="try: stop generation btn, final?" />
-    <option name="LAST_COMMIT_MESSAGE" value="try: stop generation btn, final?" />
+    <MESSAGE value="try: more components (pdf etc...)" />
+    <option name="LAST_COMMIT_MESSAGE" value="try: more components (pdf etc...)" />
   </component>
 </project>

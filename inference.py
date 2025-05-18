@@ -9,6 +9,7 @@ from transformers import GPT2Config, LlamaConfig
 from abctoolkit.utils import Exclaim_re, Quote_re, SquareBracket_re, Barline_regexPattern
 from abctoolkit.transpose import Note_list, Pitch_sign_list
 from abctoolkit.duration import calculate_bartext_duration
+import difflib
 
 Note_list = Note_list + ['z', 'x']
 curr_model_path = INFERENCE_WEIGHTS_PATH
