@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="fix errror in stop btn">
+    <list default="true" id="656882ec-5e91-4fc8-9b93-1baf2d1a38ff" name="Changes" comment="fix vocal -&gt; voice, fix dynamics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inference.py" beforeDir="false" afterPath="$PROJECT_DIR$/inference.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/instrument_mapping.json" beforeDir="false" afterPath="$PROJECT_DIR$/instrument_mapping.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -315,7 +314,13 @@
       <option name="presentableId" value="LOCAL‎00034" />
       <updated>1747575080709</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL‎00035" summary="fix vocal -&gt; voice, fix dynamics">
+      <created>1747646766815</created>
+      <option name="number" value="LOCAL‎00035" />
+      <option name="presentableId" value="LOCAL‎00035" />
+      <updated>1747646766815</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -349,6 +354,7 @@
     <MESSAGE value="increase temperature_slider val to 4.0 from 2.0" />
     <MESSAGE value="try: fix re in dynamics" />
     <MESSAGE value="fix errror in stop btn" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix errror in stop btn" />
+    <MESSAGE value="fix vocal -&gt; voice, fix dynamics" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix vocal -&gt; voice, fix dynamics" />
   </component>
 </project>

@@ -156,6 +156,7 @@ def convert_files_enhanced(raw_abc_content, period, composer, instrumentation):
     except Exception as e:
         # Clean up partially created files if desired
         raise gr.Error(f"File processing and conversion failed: {str(e)}")
+        print(e)
 
     return file_paths_dict, postprocessed_abc
 
@@ -256,6 +257,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
         except Exception as e:
             output_q_stream.put(f"\nError during inference: {str(e)}\n")
             result_container.append(None)  # Indicate failure
+            print(e)
         finally:
             if sys.stdout == output_q_stream.queue.put.__self__:  # Check if stdout is still our stream
                 sys.stdout = original_stdout
@@ -324,6 +326,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
     except Exception as e:
         process_log_output += f"\nError during file conversion: {str(e)}"
         final_abc_output = f"File conversion error: {str(e)}"
+        print(e)
         # Reset outputs specific to files on error
         pdf_image_path_output = None
         audio_file_path_output = None
