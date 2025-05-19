@@ -92,7 +92,7 @@ def add_cresc_dynamic_markers(abc_text):
     dim_pattern = r'("["_^<>@][^"]*dim.[^"]*")'  # todo maybe 'dim' and not 'dim.'
 
     # Regex pattern for finding the next dynamic marking (!p!, !mp!, !mf!, etc.)
-    dynamic_pattern = f'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!|{dim_pattern}|{cresc_pattern})'
+    dynamic_pattern = f'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!|!<(!|!>(!|{dim_pattern}|{cresc_pattern})'
 
     # Find all crescendo matches
     cresc_matches = list(re.finditer(r"(?i)" + cresc_pattern, abc_text))
@@ -139,7 +139,7 @@ def add_dim_dynamic_markers(abc_text):
     cresc_pattern = r'("["_^<>@][^"]*cresc[^"]*")'
 
     # Regex pattern for finding the next dynamic marking (!p!, !mp!, !mf!, etc.)
-    dynamic_pattern = f'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!|{dim_pattern}|{cresc_pattern})'
+    dynamic_pattern = f'(!p!|!pp!|!ppp!|!pppp!|!mp!|!mf!|!f!|!ff!|!fff!|!ffff!|!sfz!|!<(!|!>(!|{dim_pattern}|{cresc_pattern})'
 
     # Find all crescendo matches
     dim_matches = list(re.finditer(r"(?i)" + dim_pattern, abc_text))
