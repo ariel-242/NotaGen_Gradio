@@ -288,6 +288,8 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
         '%' + instrumentation + '\n']
 
     while True:
+        if stop_event.is_set():
+            return None
 
         failure_flag = False
 
@@ -416,6 +418,10 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 input_patches = torch.tensor([input_patches], device=device)
                 input_patches = input_patches.reshape(1, -1)
 
+        if stop_event.is_set():
+            print("\nGeneration stopped by user.")
+            return None
+
         if not failure_flag:
             abc_text = ''.join(byte_list)
 
@@ -436,8 +442,6 @@ def inference_patch(period, composer, instrumentation, num_bars, metadata_K, met
                 fixed_cresc_abc_text = add_cresc_dynamic_markers(unreduced_abc_text)
                 fixed_dim_abc_text = add_dim_dynamic_markers(fixed_cresc_abc_text)
                 return fixed_dim_abc_text
-        if failure_flag:
-            return None
 
 def postprocess_inst_names(abc_text):
     with open('standard_inst_names.txt', 'r', encoding='utf-8') as f:
@@ -474,4 +478,4 @@ def postprocess_inst_names(abc_text):
     return processed_abc_text
 
 if __name__ == '__main__':
-    inference_patch('Classical', 'Beethoven, Ludwig van', 'Keyboard')
+    inference_patch('Classical', 'Beethoven, Ludwig van', 'Keyboard', stop_event=threading.Event())

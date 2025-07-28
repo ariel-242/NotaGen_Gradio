@@ -155,8 +155,8 @@ def convert_files_enhanced(raw_abc_content, period, composer, instrumentation):
 
     except Exception as e:
         # Clean up partially created files if desired
-        raise gr.Error(f"File processing and conversion failed: {str(e)}")
         print(e)
+        raise gr.Error(f"File processing and conversion failed: {str(e)}")
 
     return file_paths_dict, postprocessed_abc
 
@@ -242,7 +242,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     result_container = []  # To store result from thread
 
-    def run_inference_thread():
+    def run_inference_thread(stop_evt):
         nonlocal result_container  # Allow modification of outer scope variable
         try:
             # Correctly pass parameters to inference_patch
