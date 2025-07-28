@@ -193,6 +193,12 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
     global stop_flag, generation_thread
     stop_flag = False
 
+    output_queue = queue.Queue()
+    output_q_stream = RealtimeStream(output_queue)  # Wrap the queue
+
+    original_stdout = sys.stdout
+    sys.stdout = output_q_stream
+
     if generation_thread and generation_thread.is_alive():
         stop_flag = True
         generation_thread.join(timeout=5)  # Wait a bit for it to stop
@@ -255,11 +261,11 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
             )
             result_container.append(raw_abc_result)
         except Exception as e:
-            output_q_stream.put(f"\nError during inference: {str(e)}\n")
+            output_q_stream.queue.put(f"\nError during inference: {str(e)}\n")
             result_container.append(None)  # Indicate failure
             print(e)
         finally:
-            if sys.stdout == output_q_stream.queue.put.__self__:  # Check if stdout is still our stream
+            if sys.stdout == output_q_stream:  # Check if stdout is still our stream
                 sys.stdout = original_stdout
 
     generation_thread = threading.Thread(target=run_inference_thread)
