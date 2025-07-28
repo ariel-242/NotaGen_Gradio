@@ -55,8 +55,8 @@ for p_line in prompts_data:  # Use new variable name
 periods = sorted({p for p, _, _ in valid_combinations})
 # Composers and instruments will be filtered dynamically
 
-# Global stop flag and thread reference
-stop_flag = False
+# Global stop event and thread reference
+stop_event = threading.Event()
 generation_thread = None
 
 
@@ -190,23 +190,17 @@ def update_page_display(direction, current_pdf_state):
 
 def generate_music(period, composer, instrumentation, num_bars, metadata_K, metadata_M, model_name_selected, seed_val,
                    top_k_val, top_p_val, temperature_val):
-    global stop_flag, generation_thread
-    stop_flag = False
-
-    output_queue = queue.Queue()
-    output_q_stream = RealtimeStream(output_queue)  # Wrap the queue
-
-    original_stdout = sys.stdout
-    sys.stdout = output_q_stream
+    global stop_event, generation_thread
+    stop_event.clear()  # Clear any previous stop signals
 
     if generation_thread and generation_thread.is_alive():
-        stop_flag = True
-        generation_thread.join(timeout=5)  # Wait a bit for it to stop
+        stop_event.set()  # Signal the old thread to stop
+        generation_thread.join(timeout=5)
         if generation_thread.is_alive():  # If still alive, it's stuck, can't start new one easily
             yield "Previous generation is still stopping. Please wait and try again.", "", None, None, None, gr.update(
                 value=None, visible=False)
             return
-        stop_flag = False
+        stop_event = threading.Event()
 
     if not period or not composer or not instrumentation:
         raise gr.Error("Period, Composer, and Instrumentation must be selected.")
@@ -257,25 +251,24 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
                 num_bars=num_bars, metadata_K=metadata_K, metadata_M=metadata_M,
                 model_path=os.path.join(models_path, model_name_selected),  # Pass full path
                 seed=seed_val, top_k=top_k_val, top_p=top_p_val, temperature=temperature_val,
-                # Add any other parameters inference_patch expects, like the stop_flag if it supports it
+                stop_event=stop_evt
             )
             result_container.append(raw_abc_result)
         except Exception as e:
-            output_q_stream.queue.put(f"\nError during inference: {str(e)}\n")
+            output_q_stream.put(f"\nError during inference: {str(e)}\n")
             result_container.append(None)  # Indicate failure
             print(e)
         finally:
-            if sys.stdout == output_q_stream:  # Check if stdout is still our stream
+            if sys.stdout == output_q_stream.queue.put.__self__:  # Check if stdout is still our stream
                 sys.stdout = original_stdout
 
-    generation_thread = threading.Thread(target=run_inference_thread)
+    generation_thread = threading.Thread(target=run_inference_thread, args=(stop_event,))
     generation_thread.start()
 
     # Stream inference process output
     while generation_thread.is_alive():
-        if stop_flag:
+        if stop_event.is_set():
             process_log_output += "\nGeneration stop requested by user."
-            # Signal inference_patch to stop if it supports it (e.g., by passing stop_flag)
             break
         try:
             text = output_q_stream.get(timeout=0.1)
@@ -293,7 +286,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
 
     sys.stdout = original_stdout  # Ensure stdout is restored
 
-    if stop_flag:
+    if stop_event.is_set():
         process_log_output += "\nGeneration stopped."
         yield process_log_output, "Generation stopped by user.", None, None, None, gr.update(value=None, visible=False)
         return
@@ -344,9 +337,9 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
     yield process_log_output, final_abc_output, pdf_image_path_output, audio_file_path_output, pdf_state_output, download_files_update
 
 
-def stop_generation_action():  # Renamed for clarity
-    global stop_flag
-    stop_flag = True
+def stop_generation_action():
+    global stop_event
+    stop_event.set()
 
 
 # --- Gradio UI Definition ---
