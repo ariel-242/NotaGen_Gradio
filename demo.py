@@ -259,8 +259,7 @@ def generate_music(period, composer, instrumentation, num_bars, metadata_K, meta
             result_container.append(None)  # Indicate failure
             print(e)
         finally:
-            if sys.stdout == output_q_stream.queue.put.__self__:  # Check if stdout is still our stream
-                sys.stdout = original_stdout
+            sys.stdout = original_stdout
 
     generation_thread = threading.Thread(target=run_inference_thread, args=(stop_event,))
     generation_thread.start()
