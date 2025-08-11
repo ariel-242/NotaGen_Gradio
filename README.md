@@ -67,3 +67,10 @@ pip install torch==2.3.0 torchvision torchaudio --index-url https://download.pyt
 pip install accelerate optimum aria2
 # Download model weights into the models/ directory
 python demo.py
+```
+
+## Screenshot
+
+<p align="center">
+  <img src="illustration.png" alt="">
+</p>
