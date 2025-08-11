@@ -1,31 +1,69 @@
-## Local Gradio Demo
+# NotaGen Gradio Interface
 
-1. Set up the environment:
+Welcome to the V2 branch of **NotaGen_Gradio**, an interactive Gradio interface for the [NotaGen](https://github.com/ElectricAlexis/NotaGen)  symbolic music generation model. This repository enables users to generate, preview, and download sheet music in ABC notation and MusicXML formats, leveraging the power of large language models trained on classical music.
 
-  ```
-  conda create --name notagen python=3.10
-  conda activate notagen
-  conda install pytorch==2.3.0 pytorch-cuda=11.8 -c pytorch -c nvidia
-  pip install accelerate
-  pip install optimum
-  pip install -r requirements.txt
-  ```
+## Features
 
-2. Download [NotaGen-X](https://huggingface.co/ElectricAlexis/NotaGen/blob/main/weights_notagenx_p_size_16_p_length_1024_p_layers_20_h_size_1280.pth) and put it under ```gradio/```.
+- **Interactive Gradio Web UI:**  
+  Generate sheet music by selecting musical parameters such as period, composer, and instrumentation. The interface supports conditional generation based on these choices.
 
-3. run ```demo.py```:
+- **Model Selection & Customization:**  
+  - Choose from available models in the `models` directory.
+  - Set a random seed for reproducible results, or let the system randomize it for creative exploration.
+  - Tune generation parameters including:
+    - **Top K**: Limits the number of most likely options considered at each step.
+    - **Top P**: Controls nucleus sampling for diversity.
+    - **Temperature**: Adjusts creativity/randomness.
+    - **Number of Bars**: Specify the length of the generated piece.
+    - **Key Signature & Time Signature:** Customize the generated music’s metadata.
 
-  ```
-  cd gradio/
-  python demo.py
-  ```
+- **Real-Time Generation Log:**  
+  See process updates and streaming generation progress directly in the UI.
 
-4. Then you can view the demo page at 0.0.0.0:7861.
+- **Sheet Music Preview & Audio Playback:**  
+  - View generated scores as images (PDF preview with pagination).
+  - Listen to synthesized audio for immediate feedback.
 
-  <p align="center">
-  <img src="illustration.png" alt="NotaGen Gradio Demo">
-  </p>
-  
-  You can choose period, composer, and instrumentation as a prompt combination for NotaGen's conditional generation. After generation completes, you can save the ABC notation and MusicXML files locally.
-  
-  It is with some regret that the current combination of prompts is limited to 112, which is constrained by the number of pieces of music under each prompt in the fine-tuning dataset. We hope to expand the combinations and forms of prompts in the future.
+- **Download Options:**  
+  Save generated files in ABC notation, MusicXML, and MP3 formats for further editing or sharing.
+
+- **Metadata-Driven Prompting:**  
+  Supports 112 prompt combinations based on the fine-tuning dataset, with plans to expand.
+
+- **Google Colab Support:**  
+  A ready-to-use Colab notebook is included for easy setup and GPU-powered inference.
+
+## Problem-Solving & Improvements
+
+- **Dynamic Markings Fixes:**  
+  The inference pipeline (`inference.py`) includes robust fixes for handling dynamics:
+  - **Crescendo (`cresc`) and Diminuendo (`dim`)**:  
+    MuseScore won't generate the dynamic effects of Crescendo and Diminuendo in the output audio when converting from ABC notation. Automatic placement and correction of dynamic markers in generated ABC notation, ensuring accurate musical phrasing and proper voice assignment. Custom regex logic and voice-aware insertion routines resolve previous errors with dynamic regions.
+
+- **Expanded Parameters:**  
+  - Added controls for model name, seed, and additional "Tune Parameters" for more granular user control over generation.
+  - Improved seed management for reproducibility and creative exploration.
+
+## How to Use
+
+1. **Environment Setup:**  
+   - Clone the repo and install dependencies (see requirements.txt).
+   - Download the NotaGen model weights from [HuggingFace](https://huggingface.co/ElectricAlexis/NotaGen).
+
+2. **Run Locally:**  
+   - Launch the Gradio demo with `python demo.py` (see below for details).
+   - Access the interface at `http://localhost:7861`.
+
+3. **Google Colab:**  
+   - Open the Colab notebook and follow the instructions for quick GPU-powered inference and demo setup.
+
+## Quickstart
+
+```bash
+git clone -b V2 --single-branch https://github.com/ariel-242/NotaGen_Gradio.git
+cd NotaGen_Gradio
+pip install -r requirements.txt
+pip install torch==2.3.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install accelerate optimum aria2
+# Download model weights into the models/ directory
+python demo.py
