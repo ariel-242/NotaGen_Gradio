@@ -17,25 +17,6 @@ from convert import abc2xml, xml2, pdf2img  # Make sure these functions exist in
 title_html = """
 <div class="title-container">
     <h1 class="title-text">NotaGen</h1>  
-        <!-- ArXiv -->
-        <a href="https://arxiv.org/abs/2502.18008">
-            <img src="https://img.shields.io/badge/NotaGen_Paper-ArXiv-%23B31B1B?logo=arxiv&logoColor=white" alt="Paper">
-        </a>
-         
-        <!-- GitHub -->
-        <a href="https://github.com/ElectricAlexis/NotaGen">
-            <img src="https://img.shields.io/badge/NotaGen_Code-GitHub-%23181717?logo=github&logoColor=white" alt="GitHub">
-        </a>
-         
-        <!-- HuggingFace -->
-        <a href="https://huggingface.co/ElectricAlexis/NotaGen">
-            <img src="https://img.shields.io/badge/NotaGen_Weights-HuggingFace-%23FFD21F?logo=huggingface&logoColor=white" alt="Weights">
-        </a>
-         
-        <!-- Web Demo -->
-        <a href="https://electricalexis.github.io/notagen-demo/">
-            <img src="https://img.shields.io/badge/NotaGen_Demo-Web-%23007ACC?logo=google-chrome&logoColor=white" alt="Demo">
-        </a>
 </div>
 <p style="font-size: 1.2em;">NotaGen is a model for generating sheet music in ABC notation format. Select a period, composer, and instrumentation to generate classical-style music!</p>
 """
