@@ -1,6 +1,7 @@
 <p align="center">
 <a href="https://colab.research.google.com/github/ariel-242/NotaGen_Gradio/blob/V2/NotaGen_Gradio.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 </p>
+
 # NotaGen Gradio Interface
 
 Welcome to the V2 branch of **NotaGen_Gradio**, an interactive Gradio interface for the [NotaGen](https://github.com/ElectricAlexis/NotaGen)  symbolic music generation model. This repository enables users to generate, preview, and download sheet music in ABC notation and MusicXML formats, leveraging the power of large language models trained on classical music.
