@@ -4,7 +4,7 @@
 
 # NotaGen Gradio Interface
 
-Welcome to the V2 branch of **NotaGen_Gradio**, an interactive Gradio interface for the [NotaGen](https://github.com/ElectricAlexis/NotaGen)  symbolic music generation model. This repository enables users to generate, preview, and download sheet music in ABC notation and MusicXML formats, leveraging the power of large language models trained on classical music.
+Welcome to **NotaGen_Gradio**, an interactive Gradio interface for the [NotaGen](https://github.com/ElectricAlexis/NotaGen)  symbolic music generation model. This repository enables users to generate, preview, and download sheet music in ABC notation and MusicXML formats, leveraging the power of large language models trained on classical music. This interface is based on the interface in the NotaGen Repo of ElectricAlexis, and comes with additional features.
 
 ## Features
 
